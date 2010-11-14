@@ -38,5 +38,7 @@ Add a file field to the form for MyModel
   <%= f.file_field :image %>
 
 Now you can resize your uploaded images on the fly
-
-  <img src="<%= my_model.image.url(:size => 'c200x300') %>">
+  
+  <% if my_model.image? %>
+    <img src="<%= my_model.image.url(:size => 'c200x300') %>">
+  <% end %>

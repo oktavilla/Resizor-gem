@@ -63,6 +63,12 @@ class IntegrationTest < Test::Unit::TestCase
         assert_equal @item.image_height, @another_item.image_height
       end
 
+      should 'return true for #image?' do
+        @item.save
+        assert @item.image?
+      end
+
+
       should 'clear asset fields when assets is deleted' do
         @item.save
         assert @item.image.destroy
@@ -85,6 +91,11 @@ class IntegrationTest < Test::Unit::TestCase
       assert_nothing_raised do
         @item.save
       end
+    end
+
+    should 'return false when no attachment is set' do
+      @item.save
+      assert !@item.image?
     end
   end
 

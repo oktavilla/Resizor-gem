@@ -41,7 +41,12 @@ module Resizor
         asset_for(name).assign(file)
       end
 
+      define_method "#{name}?" do
+        !asset_for(name).file.nil? || !asset_for(name).id.nil?
+      end
+
     end
+
     def resizor_assets
       read_inheritable_attribute(:resizor_assets)
     end
