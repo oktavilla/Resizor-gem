@@ -1,6 +1,6 @@
 =Resizor
 
-For use with http://resizor.com.
+For use with http://resizor.com
 
 Inspired by Thoughtbot's Paperclip
 
@@ -37,3 +37,6 @@ Add a file field to the form for MyModel
   <%= f.label :image %>
   <%= f.file_field :image %>
 
+Now you can resize your uploaded images on the fly
+
+  <img src="<%= my_model.image.url(:size => 'c200x300') %>">
