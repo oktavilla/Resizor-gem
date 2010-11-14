@@ -59,7 +59,7 @@ module Resizor
     
     def assign in_file
       if in_file.is_a?(Resizor::Asset)
-        @resizor_id = in_file.id
+        @id = in_file.id
         @name = in_file.name
         @mime_type = in_file.mime_type
         @size = in_file.size

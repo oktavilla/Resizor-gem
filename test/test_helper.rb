@@ -6,8 +6,6 @@ require 'test/unit'
 require 'shoulda'
 require 'resizor'
 
-require 'resizor/railtie'
-
 gem 'activerecord', '~>3.0.0'
 require 'active_record'
 

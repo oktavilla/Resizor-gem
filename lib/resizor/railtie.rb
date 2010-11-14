@@ -31,7 +31,7 @@ module Resizor
       resizor_assets[name] = options
       
       before_save :save_attached_files_for_resizor
-      after_destroy :delete_attached_files_on_resizor
+      before_destroy :delete_attached_files_on_resizor
       
       define_method name do |*args|
         asset_for(name)
@@ -60,7 +60,7 @@ module Resizor
     end
     
     def delete_attached_files_on_resizor
-      self.class.resizor_assets do |name, options|
+      self.class.resizor_assets.each do |name, options|
         asset_for(name).send(:destroy)
       end
     end

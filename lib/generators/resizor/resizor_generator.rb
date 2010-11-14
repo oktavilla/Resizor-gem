@@ -17,7 +17,7 @@ class ResizorGenerator < ActiveRecord::Generators::Base
   protected
 
   def migration_name
-    "add_asset_#{asset_names.join("_")}_to_#{name.underscore}"
+    "add_resizor_#{asset_names.join("_")}_to_#{name.underscore}"
   end
 
   def migration_file_name
