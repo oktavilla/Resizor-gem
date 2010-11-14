@@ -2,4 +2,38 @@
 
 For use with http://resizor.com.
 
-Inspired by Paperclip
+Inspired by Thoughtbot's Paperclip
+
+== Usage
+
+Add resizor to your Gemfile
+  
+  gem 'resizor'
+
+Install resizor gem 
+
+  $ bundle install
+
+Add a initializer to RAILS_ROOT/config/initializers/resizor.rb
+
+  Resizor.configure do |config|
+    config.api_key = 'my-api-key'
+  end
+
+Add Resizor fields to your model
+
+  $ rails generate resizor MyModel image
+
+Add has_resizor_asset to MyModel
+
+  class MyModel < ActiveRecord::Base
+    has_resizor_asset :image
+    
+    ...
+  end
+
+Add a file field to the form for MyModel
+  
+  <%= f.label :image %>
+  <%= f.file_field :image %>
+
