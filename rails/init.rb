@@ -1,0 +1,1 @@
+require 'resizor-client/railtie'

@@ -1,0 +1,5 @@
+=Resizor
+
+For use with http://resizor.com.
+
+Inspired by Paperclip
