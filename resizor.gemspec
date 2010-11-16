@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Winston Design"]
   s.email       = ["hello@resizor.com"]
-  s.homepage    = "http://rubygems.org/gems/resizor-client"
+  s.homepage    = "http://github.org/winstondesign/resizor-gem"
   s.summary     = "Client for Resizor.com API"
   s.description = "Lets you easily interface with Resizor.com's REST API. Includes Rails helpers."
 
