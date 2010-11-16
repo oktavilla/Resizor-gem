@@ -4,7 +4,7 @@ module Resizor
     attr_accessor :api_host, :api_port, :api_key
 
     def initialize(options={})
-      @api_host = options[:api_host] || options['api_host'] || 'http://resizor.com'
+      @api_host = options[:api_host] || options['api_host'] || 'resizor.com'
       @api_port = options[:api_port] || options['api_port'] || 80
       @api_key  = options[:api_key]  || options['api_key']
     end
