@@ -41,7 +41,7 @@ class AssetTest < Test::Unit::TestCase
       
       context 'on success' do
         setup do 
-          stub_http_request(:post, "resizor.test/assets.json").
+          stub_http_request(:post, "https://resizor.test:80/assets.json").
             with { |request|
               request.body.include?("Content-Disposition: form-data; name=\"file\"; filename=\"image.jpg") 
             }.
@@ -51,7 +51,7 @@ class AssetTest < Test::Unit::TestCase
         end
         
         should 'make create call to Resizor on save with file' do
-          assert_requested(:post, "resizor.test/assets.json",
+          assert_requested(:post, "https://resizor.test:80/assets.json",
                            :times => 1) { |request| 
                               request.body.include?("Content-Disposition: form-data; name=\"file\"; filename=\"image.jpg")
                             }
@@ -69,7 +69,7 @@ class AssetTest < Test::Unit::TestCase
       
       context 'on failure' do
         should 'return false' do
-          stub_http_request(:post, "resizor.test/assets.json").to_return(:status => 422)
+          stub_http_request(:post, "https://resizor.test:80/assets.json").to_return(:status => 422)
           assert !@asset.save_to_resizor
         end
       end
@@ -77,18 +77,18 @@ class AssetTest < Test::Unit::TestCase
 
     context 'when destroying an asset' do
       should 'make delete call to Resizor on destroy' do
-        stub_http_request(:delete, "resizor.test/assets/10.json?api_key=test-api-key").to_return(:status => 200)
+        stub_http_request(:delete, "https://resizor.test:80/assets/10.json?api_key=test-api-key").to_return(:status => 200)
         @asset.destroy
-        assert_requested :delete, "resizor.test/assets/10.json?api_key=test-api-key", :times => 1
+        assert_requested :delete, "https://resizor.test:80/assets/10.json?api_key=test-api-key", :times => 1
       end
 
       should 'return true on success' do
-        stub_http_request(:delete, "resizor.test/assets/10.json?api_key=test-api-key").to_return(:status => 200)
+        stub_http_request(:delete, "https://resizor.test:80/assets/10.json?api_key=test-api-key").to_return(:status => 200)
         assert @asset.destroy
       end
 
       should 'return false on failure' do
-        stub_http_request(:delete, "resizor.test/assets/10.json?api_key=test-api-key").to_return(:status => 404) 
+        stub_http_request(:delete, "https://resizor.test:80/assets/10.json?api_key=test-api-key").to_return(:status => 404) 
         assert !@asset.destroy
       end
     end

@@ -6,7 +6,7 @@ module Resizor
   extend self
   extend Forwardable
   attr_reader :connection
-  def_delegators :connection, :get, :post, :delete, :api_url, :api_key
+  def_delegators :connection, :get, :post, :delete, :api_url, :api_key, :use_ssl
   
   def configure
     yield @connection = Connection.new

@@ -1,12 +1,13 @@
 require 'cgi'
 module Resizor
   class Connection
-    attr_accessor :api_host, :api_port, :api_key
+    attr_accessor :api_host, :api_port, :api_key, :use_ssl
 
     def initialize(options={})
       @api_host = options[:api_host] || options['api_host'] || 'resizor.com'
       @api_port = options[:api_port] || options['api_port'] || 80
       @api_key  = options[:api_key]  || options['api_key']
+      @use_ssl  = options[:use_ssl]  || options['use_ssl'] || true
     end
     
     def get(request_uri, params={}, append_api_key=true)
@@ -32,8 +33,8 @@ module Resizor
       end
     end
     
-    def api_url
-      @api_url ||= "http://#{@api_host}:#{@api_port}"
+    def api_url(force_http = false)
+      @api_url ||= "#{(@use_ssl == true && force_http == false) ? 'https' : 'http'}://#{@api_host}:#{@api_port}"
     end
     
   protected

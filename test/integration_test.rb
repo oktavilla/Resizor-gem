@@ -24,17 +24,17 @@ class IntegrationTest < Test::Unit::TestCase
         File.open(@image_fixture_path, 'w') {|f| f.write('JPEG data') }
         @file = File.new(@image_fixture_path, 'rb')
         @item.image = @file
-        stub_http_request(:post, "resizor.test/assets.json").
+        stub_http_request(:post, "https://resizor.test:80/assets.json").
                           with { |request| request.body.include?("Content-Disposition: form-data; name=\"file\"; filename=\"image.jpg") }.
                           to_return(:status => 201, :body => '{"asset": { "id":1, "name":"i", "extension":"jpg", "mime_type":"image/jpeg", "height":7, "width":8, "file_size":9, "created_at":"2010-10-23T13:07:25Z"}}')
-        stub_http_request(:delete, "resizor.test/assets/1.json?api_key=test-api-key").to_return(:status => 200)
+        stub_http_request(:delete, "https://resizor.test:80/assets/1.json?api_key=test-api-key").to_return(:status => 200)
       end
       
       teardown { File.unlink(@image_fixture_path) }
 
       should 'save attached asset to Resizor on save' do
         assert @item.save
-        assert_requested(:post, "resizor.test/assets.json", :times => 1) do |request|
+        assert_requested(:post, "https://resizor.test:80/assets.json", :times => 1) do |request|
           request.body.include?("Content-Disposition: form-data; name=\"file\"; filename=\"image.jpg") 
         end
       end
@@ -75,14 +75,14 @@ class IntegrationTest < Test::Unit::TestCase
         [:image_resizor_id, :image_name, :image_mime_type, :image_size, :image_width, :image_height].each do |_attr|
           assert_nil @item.send(_attr)
         end
-        assert_requested :delete, "resizor.test/assets/1.json?api_key=test-api-key", :times => 1
+        assert_requested :delete, "https://resizor.test:80/assets/1.json?api_key=test-api-key", :times => 1
       end
       
       should 'delete resizor asset when model instance is deleted' do
         @item.save
         @item.reload
         assert @item.destroy
-        assert_requested :delete, "resizor.test/assets/1.json?api_key=test-api-key", :times => 1
+        assert_requested :delete, "https://resizor.test:80/assets/1.json?api_key=test-api-key", :times => 1
       end
 
     end
