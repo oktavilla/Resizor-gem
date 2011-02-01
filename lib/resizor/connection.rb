@@ -9,40 +9,40 @@ module Resizor
       @api_key  = options[:api_key]  || options['api_key']
       @use_ssl  = options[:use_ssl]  || options['use_ssl'] || true
     end
-    
+
     def get(request_uri, params={}, append_api_key=true)
       params[:api_key] = @api_key if append_api_key
       query = make_query(params)
       do_request do
         make_response_for resource[request_uri + '?' + query].get
       end
-    end 
-    
+    end
+
     def post(request_uri, params={}, append_api_key=true)
       params[:api_key] = @api_key if append_api_key
-      do_request do 
+      do_request do
         make_response_for resource[request_uri].post params
       end
-    end 
-    
+    end
+
     def delete(request_uri, params={}, append_api_key=true)
       params[:api_key] = @api_key if append_api_key
       query = make_query(params)
-      do_request do 
+      do_request do
         make_response_for resource[request_uri + '?' + query].delete
       end
     end
-    
+
     def api_url(force_http = false)
-      @api_url ||= "#{(@use_ssl == true && force_http == false) ? 'https' : 'http'}://#{@api_host}:#{@api_port}"
+      @api_url ||= "#{(@use_ssl == true && force_http == false) ? 'https' : 'http'}://#{@api_host}:#{(@use_ssl == true && force_http == false) ? '443' : @api_port}}"
     end
-    
+
   protected
-    
+
     def resource
       @resource ||= RestClient::Resource.new(api_url)
     end
-    
+
     def make_query(params)
       params.collect {|key, value| [CGI.escape(key.to_s), CGI.escape(value.to_s)].join("=") }.join("&")
     end
@@ -50,7 +50,7 @@ module Resizor
     def make_response_for(http_response)
       Resizor::Response.new(http_response.code, http_response.body)
     end
-    
+
     def do_request(&block)
       begin
         yield
@@ -59,7 +59,7 @@ module Resizor
       end
     end
   end
-  
+
   class Response
     attr_accessor :code, :body, :format
     def initialize(_code, _body, _format = 'json')
@@ -71,7 +71,7 @@ module Resizor
         else
           JSON.parse(_body)
         end
-      else  
+      else
         _body
       end
     end
