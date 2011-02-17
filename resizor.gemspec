@@ -14,8 +14,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.3.6"
 
   s.add_development_dependency "bundler", ">= 1.0.0"
-  
-  s.add_dependency(%q<rest-client>, [">= 1.4"])
+
+  s.add_dependency(%q<rest-client>, ["~> 1.4.2"])
   s.add_dependency(%q<json>, [">= 1.2"])
 
   s.files        = `git ls-files`.split("\n")
