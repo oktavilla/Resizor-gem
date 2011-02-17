@@ -34,7 +34,7 @@ module Resizor
     end
 
     def api_url(force_http = false)
-      @api_url ||= "#{(@use_ssl == true && force_http == false) ? 'https' : 'http'}://#{@api_host}:#{(@use_ssl == true && force_http == false) ? '443' : @api_port}}"
+      @api_url ||= "#{(@use_ssl == true && force_http == false) ? 'https' : 'http'}://#{@api_host}:#{(@use_ssl == true && force_http == false) ? '443' : @api_port}"
     end
 
   protected
