@@ -18,7 +18,7 @@ module Resizor
 
     def save_to_resizor
       if path && File.exists?(path)
-        ret = Resizor.post('/assets.json', :file => File.open(path))
+        ret = Resizor.post('/assets.json', :file => File.open(path, 'wb'))
         if ret.code == 201
           @id = ret.body['asset']['id']
           @name = "#{ret.body['asset']['name']}.#{ret.body['asset']['extension']}"
