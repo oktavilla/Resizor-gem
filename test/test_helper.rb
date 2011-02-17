@@ -16,7 +16,21 @@ config = YAML::load(IO.read(File.dirname(__FILE__) + '/database.yml'))
 ActiveRecord::Base.logger = ActiveSupport::BufferedLogger.new(File.dirname(__FILE__) + "/debug.log")
 ActiveRecord::Base.establish_connection(config['test'])
 
-ActiveRecord::Base.send(:include, Resizor)
+if defined?(Rails::Railtie)
+  class Railtie < Rails::Railtie
+    initializer 'resizor.insert_into_active_record' do
+      ActiveSupport.on_load :active_record do
+        Resizor::Railtie.insert
+      end
+    end
+  end
+end
+
+class Railtie
+  def self.insert
+    ActiveRecord::Base.send(:include, Resizor)
+  end
+end
 
 def build_model
   ActiveRecord::Base.connection.create_table :items, :force => true do |t|
