@@ -80,6 +80,7 @@ module Resizor
         end
         if save_to_resizor
           File.unlink(@path)
+          @file = nil
         else
           instance.errors[attachment_name.to_sym] << "can't be saved"
           return false
@@ -100,14 +101,19 @@ module Resizor
 
     def destroy
       if ret = super
-        instance_write(:resizor_id, nil)
-        instance_write(:name, nil)
-        instance_write(:mime_type, nil)
-        instance_write(:size, nil)
-        instance_write(:width, nil)
-        instance_write(:height, nil)
+        clear
+        instance.send(:save)
       end
       ret
+    end
+
+    def clear
+      @id = nil
+      @name = nil
+      @mime_type = nil
+      @size = nil
+      @width = nil
+      @height = nil
     end
 
   protected
