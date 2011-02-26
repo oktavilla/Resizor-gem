@@ -14,11 +14,12 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.3.6"
 
   s.add_development_dependency "bundler", ">= 1.0.0"
+  s.add_development_dependency "shoulda", ">= 2.11.3"
+  s.add_development_dependency "webmock", ">= 1.6.2"
 
   s.add_dependency(%q<rest-client>, [">= 1.4.2"])
   s.add_dependency(%q<json>, [">= 1.2"])
 
-  s.files        = `git ls-files`.split("\n")
-  s.executables  = `git ls-files`.split("\n").map{|f| f =~ /^bin\/(.*)/ ? $1 : nil}.compact
+  s.files        = Dir.glob("{test,lib}/**/*") + %w(README.rdoc resizor.gemspec Rakefile Gemfile)
   s.require_path = 'lib'
 end
