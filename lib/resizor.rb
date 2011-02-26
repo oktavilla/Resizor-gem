@@ -7,13 +7,7 @@ require 'resizor/version'
 require 'resizor/railtie'
 
 if defined? ActionDispatch::Http::UploadedFile
-  module ActionDispatch
-    module Http
-      class UploadedFile
-        def path
-          @tempfile.path
-        end
-      end
-    end
+  ActionDispatch::Http::UploadedFile.send :define_method, :path do
+    @tempfile.path
   end
 end
