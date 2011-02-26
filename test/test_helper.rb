@@ -57,6 +57,24 @@ def setup_resizor
   Resizor::Railtie.insert
 end
 
+def fixtures_dir
+  File.join(File.dirname(__FILE__), 'fixtures')
+end
+
+def image_fixture_path
+  File.join(fixtures_dir, 'image.jpg')
+end
+
+def setup_fixtures
+  Dir.mkdir(fixtures_dir) unless File.directory?(fixtures_dir)
+  File.open(image_fixture_path, 'w') {|f| f.write('Fake JPEG data') } unless File.exists?(image_fixture_path)
+end
+
+def teardown_fixtures
+  File.unlink(image_fixture_path) if File.exists?(image_fixture_path)
+  Dir.rmdir(fixtures_dir) if File.directory?(fixtures_dir)
+end
+
 class File
   def original_filename
     File.basename(self.path)

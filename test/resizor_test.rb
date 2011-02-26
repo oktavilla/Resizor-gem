@@ -48,7 +48,7 @@ class ResizorTest < Test::Unit::TestCase
       stub_http_request(:delete, "https://resizor.test:443/assets/1.json?api_key=test-api-key")
       Resizor.delete('/assets/1.json').tap do |r|
         assert_equal 200, r.code
-        assert_nil r.body
+        assert !r.body
       end
     end
 
@@ -59,7 +59,7 @@ class ResizorTest < Test::Unit::TestCase
     end
 
     should 'add params along with API key when generating POST URL' do
-      stub_http_request(:post, "https://resizor.test:443/assets.json").with(:body => 'api_key=test-api-key&id=1')
+      stub_http_request(:post, "https://resizor.test:443/assets.json").with(:body => /(test-api-key|1)/)
       Resizor.post('/assets.json', :id => 1)
       assert_requested :post, "https://resizor.test:443/assets.json"
     end

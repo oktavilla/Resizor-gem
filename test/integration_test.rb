@@ -20,9 +20,8 @@ class IntegrationTest < Test::Unit::TestCase
 
     context 'with a file attached' do
       setup do
-        @image_fixture_path = File.join(File.dirname(__FILE__), 'fixtures', 'image.jpg')
-        File.open(@image_fixture_path, 'w') {|f| f.write('JPEG data') }
-        @file = File.new(@image_fixture_path, 'rb')
+        setup_fixtures
+        @file = File.new(image_fixture_path, 'rb')
         @item.image = @file
         stub_http_request(:post, "https://resizor.test:443/assets.json").
                           with { |request| request.body.include?("Content-Disposition: form-data; name=\"file\"; filename=\"image.jpg") }.
@@ -30,7 +29,7 @@ class IntegrationTest < Test::Unit::TestCase
         stub_http_request(:delete, "https://resizor.test:443/assets/1.json?api_key=test-api-key").to_return(:status => 200)
       end
 
-      teardown { File.unlink(@image_fixture_path) if File.exists?(@image_fixture_path) }
+      teardown { teardown_fixtures }
 
       should 'save attached asset to Resizor on save' do
         assert @item.save
