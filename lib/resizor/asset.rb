@@ -1,5 +1,5 @@
 module Resizor
-  class Asset
+  class ResizorAsset
     attr_accessor :id, :name, :mime_type, :size, :width, :height, :path
 
     def initialize(options={})
@@ -41,7 +41,7 @@ module Resizor
     end
   end
 
-  class AttachedAsset < Resizor::Asset
+  class AttachedResizorAsset < Resizor::ResizorAsset
 
     attr_accessor :attachment_name, :instance, :file
 
@@ -58,7 +58,7 @@ module Resizor
     end
 
     def assign in_file
-      if in_file.is_a?(Resizor::Asset)
+      if in_file.is_a?(Resizor::ResizorAsset)
         @id = in_file.id
         @name = in_file.name
         @mime_type = in_file.mime_type

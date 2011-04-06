@@ -1,6 +1,6 @@
 require 'cgi'
 module Resizor
-  class Connection
+  class ResizorConnection
     attr_accessor :api_host, :api_port, :api_key, :use_ssl
 
     def initialize(options={})
@@ -34,7 +34,7 @@ module Resizor
     end
 
     def api_url(force_http = false)
-      @api_url ||= "#{(@use_ssl == true && force_http == false) ? 'https' : 'http'}://#{@api_host}:#{(@use_ssl == true && force_http == false) ? '443' : @api_port}"
+      "#{(@use_ssl == true && force_http == false) ? 'https' : 'http'}://#{@api_host}:#{(@use_ssl == true && force_http == false) ? '443' : @api_port}"
     end
 
   protected

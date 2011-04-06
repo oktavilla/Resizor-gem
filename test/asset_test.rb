@@ -1,10 +1,10 @@
 require File.expand_path(File.dirname(__FILE__) + '/test_helper')
 
-class AssetTest < Test::Unit::TestCase
-  context "A Asset" do
+class ResizorAssetTest < Test::Unit::TestCase
+  context "A ResizorAsset" do
     setup do
       setup_resizor
-      @asset = Resizor::Asset.new(:id => 10,
+      @asset = Resizor::ResizorAsset.new(:id => 10,
                                   :name => 'my_file.jpg',
                                   :mime_type => 'image/jpeg',
                                   :width => 200,

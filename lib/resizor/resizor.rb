@@ -7,11 +7,11 @@ module Resizor
   extend Forwardable
   attr_reader :connection
   def_delegators :connection, :get, :post, :delete, :api_url, :api_key, :use_ssl
-  
+
   def configure
-    yield @connection = Connection.new
+    yield @connection = ResizorConnection.new
   end
-  
+
   def connection
     raise "Not connected. Please setup Resizor configuration first." unless @connection
     @connection
