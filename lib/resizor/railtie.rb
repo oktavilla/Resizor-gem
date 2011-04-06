@@ -13,26 +13,26 @@ module Resizor
 
   class Railtie
     def self.insert
-      ActiveRecord::Base.send(:include, Resizor)
+      ActiveRecord::Base.send(:include, Resizor::Glue)
     end
   end
 
-  class << self
-    def included base
+  module Glue
+    def self.included base
       base.extend ClassMethods
     end
   end
-  
+
   module ClassMethods
     def has_resizor_asset name, options = {}
       include InstanceMethods
-      
+
       write_inheritable_attribute(:resizor_assets, {}) if resizor_assets.nil?
       resizor_assets[name] = options
-      
+
       before_save :save_attached_files_for_resizor
       before_destroy :delete_attached_files_on_resizor
-      
+
       define_method name do |*args|
         asset_for(name)
       end
@@ -51,19 +51,19 @@ module Resizor
       read_inheritable_attribute(:resizor_assets)
     end
   end
-  
-  module InstanceMethods 
+
+  module InstanceMethods
     def asset_for name
       @resizor_assets ||= {}
-      @resizor_assets[name] ||= Resizor::AttachedAsset.new(name, self, self.class.resizor_assets[name])
+      @resizor_assets[name] ||= Resizor::AttachedResizorAsset.new(name, self, self.class.resizor_assets[name])
     end
-    
+
     def save_attached_files_for_resizor
       self.class.resizor_assets.each do |name, options|
         asset_for(name).send(:save)
       end
     end
-    
+
     def delete_attached_files_on_resizor
       self.class.resizor_assets.each do |name, options|
         asset_for(name).send(:destroy)

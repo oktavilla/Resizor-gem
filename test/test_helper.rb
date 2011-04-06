@@ -28,7 +28,7 @@ end
 
 class Railtie
   def self.insert
-    ActiveRecord::Base.send(:include, Resizor)
+    ActiveRecord::Base.send(:include, Resizor::Glue)
   end
 end
 

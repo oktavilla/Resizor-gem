@@ -8,12 +8,13 @@ class IntegrationTest < Test::Unit::TestCase
     end
 
     should 'add has_resizor_asset to ActiveRecord::Base' do
-      assert ActiveRecord::Base.methods.include?('has_resizor_asset')
+      assert ActiveRecord::Base.methods.include?(:has_resizor_asset)
     end
   end
 
   context 'A ActiveRecord model that has_resizor_asset' do
     setup do
+      setup_resizor
       build_model
       @item = Item.new(:name => 'my test item')
     end
