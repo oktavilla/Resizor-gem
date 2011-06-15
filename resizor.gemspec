@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "bundler", ">= 1.0.0"
   s.add_development_dependency "shoulda", ">= 2.11.3"
   s.add_development_dependency "webmock", ">= 1.6.2"
+  s.add_development_dependency 'activerecord', '~>3.0.0'
 
   s.add_dependency(%q<rest-client>, [">= 1.4.2"])
   s.add_dependency(%q<json>, [">= 1.2"])
