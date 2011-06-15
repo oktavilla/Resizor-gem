@@ -65,7 +65,7 @@ module Resizor
     def initialize(_code, _body, _format = 'json')
       @code = _code
       @format = _format
-      @body = if @format == 'json'
+      @body = if @format == 'json' && _body != ''
         if defined?(ActiveSupport::JSON)
           ActiveSupport::JSON.decode(_body)
         else
