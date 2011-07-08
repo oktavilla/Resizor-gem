@@ -8,7 +8,7 @@ module Resizor
 
     def url(options={})
       options = {:size => '200', :format => 'jpg'}.merge(options)
-      "#{Resizor.api_url(true)}/assets/#{id}.#{options[:format]}?size=#{options[:size]}&token=#{resize_token_for(options)}"
+      "#{Resizor.api_url(true)}/assets/#{id}.#{options[:format]}?size=#{options[:size]}#{"&cutout="+options[:cutout] if options[:cutout]}&token=#{resize_token_for(options)}"
     end
 
     def resize_token_for(options={})

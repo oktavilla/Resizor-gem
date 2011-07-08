@@ -32,6 +32,10 @@ class ResizorAssetTest < Test::Unit::TestCase
       assert_equal 'b8bb7c4c7c4fc1006c904f011f32f50f69730e5e', @asset.resize_token_for(:size => 'c200x300', :format => 'jpg')
     end
 
+    should 'generate url for size c200x300 with cutout 300x200-30x40' do
+      assert_equal 'http://resizor.test:80/assets/10.jpg?size=c200x300&cutout=300x200-30x40&token=b8bb7c4c7c4fc1006c904f011f32f50f69730e5e', @asset.url(:size => 'c200x300', :cutout => '300x200-30x40')
+    end
+
     context 'when saving to resizor' do
       setup do
         @jpg_file = Tempfile.new('image.jpg')
