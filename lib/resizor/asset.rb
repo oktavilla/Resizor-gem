@@ -8,8 +8,9 @@ module Resizor
 
     def url(options={})
       options = {:size => '200', :format => 'jpg'}.merge(options)
-      "#{Resizor.api_url(true)}/assets/#{id}.#{options[:format]}?size=#{options[:size]}#{"&cutout="+options[:cutout] if options[:cutout]}&token=#{resize_token_for(options)}"
+      Resizor.cdn_host ? cdn_compatible_url(options) : query_string_url(options)
     end
+
 
     def resize_token_for(options={})
       options = {:size => '200', :format => 'jpg'}.merge(options)
@@ -39,6 +40,17 @@ module Resizor
        return true
       end
     end
+
+  private
+
+    def query_string_url(options={})
+      "#{Resizor.api_url(true)}/assets/#{id}.#{options[:format]}?size=#{options[:size]}#{"&cutout="+options[:cutout] if options[:cutout]}&token=#{resize_token_for(options)}"
+    end
+
+    def cdn_compatible_url(options={})
+      "http://#{Resizor.cdn_host}/assets/#{options[:size]}#{"/"+options[:cutout] if options[:cutout]}/#{resize_token_for(options)}/#{id}.#{options[:format]}"
+    end
+
   end
 
   class AttachedResizorAsset < Resizor::ResizorAsset

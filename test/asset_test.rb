@@ -11,6 +11,7 @@ class ResizorAssetTest < Test::Unit::TestCase
                                   :height => 300,
                                   :size => 123456)
     end
+
     should "have assigned attributes" do
       assert_equal @asset.id, 10
       assert_equal @asset.name, 'my_file.jpg'
@@ -20,12 +21,35 @@ class ResizorAssetTest < Test::Unit::TestCase
       assert_equal @asset.size, 123456
     end
 
-    should 'generate url for size c200x300' do
-      assert_equal 'http://resizor.test:80/assets/10.jpg?size=c200x300&token=b8bb7c4c7c4fc1006c904f011f32f50f69730e5e', @asset.url(:size => 'c200x300')
+    context 'when no cdn host set' do
+
+      should 'generate url for size c200x300' do
+        assert_equal 'http://resizor.test:80/assets/10.jpg?size=c200x300&token=b8bb7c4c7c4fc1006c904f011f32f50f69730e5e', @asset.url(:size => 'c200x300')
+      end
+
+      should 'generate url for size c200x300 format png' do
+        assert_equal 'http://resizor.test:80/assets/10.png?size=c200x300&token=0cf27070e89c44a40aee85decca2cd2d98af1dc2', @asset.url(:size => 'c200x300', :format => 'png')
+      end
+
     end
 
-    should 'generate url for size c200x300 format png' do
-      assert_equal 'http://resizor.test:80/assets/10.png?size=c200x300&token=0cf27070e89c44a40aee85decca2cd2d98af1dc2', @asset.url(:size => 'c200x300', :format => 'png')
+    context 'when cdn host is set' do
+
+      setup do
+        Resizor.connection.cdn_host = 'abc.cloudfront.com'
+      end
+
+      teardown do
+        Resizor.connection.cdn_host = nil
+      end
+
+      should 'generate url for size c200x300' do
+        assert_equal 'http://abc.cloudfront.com/assets/c200x300/b8bb7c4c7c4fc1006c904f011f32f50f69730e5e/10.jpg', @asset.url(:size => 'c200x300')
+      end
+
+      should 'generate url for size c200x300 format png' do
+        assert_equal 'http://abc.cloudfront.com/assets/c200x300/0cf27070e89c44a40aee85decca2cd2d98af1dc2/10.png', @asset.url(:size => 'c200x300', :format => 'png')
+      end
     end
 
     should 'generate resize token for size c200x300 and format jpg' do
