@@ -68,7 +68,6 @@ class IntegrationTest < Test::Unit::TestCase
         assert @item.image?
       end
 
-
       should 'clear asset fields when assets is deleted' do
         @item.save
         assert @item.image.destroy
