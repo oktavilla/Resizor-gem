@@ -48,7 +48,7 @@ class ResizorTest < Test::Unit::TestCase
       stub_http_request(:delete, "https://resizor.test:443/assets/1.json?api_key=test-api-key")
       Resizor.delete('/assets/1.json').tap do |r|
         assert_equal 200, r.code
-        assert !r.body
+        assert_equal '', r.body.to_s
       end
     end
 
