@@ -75,10 +75,11 @@ class ResizorAssetTest < Test::Unit::TestCase
             }.
             to_return(:status => 201,
                       :body => '{"asset": { "id":1, "name":"i", "extension":"jpg", "mime_type":"image/jpeg", "height":7, "width":8, "file_size":9, "created_at":"2010-10-23T13:07:25Z"}}')
-          @asset.save_to_resizor
         end
 
         should 'make create call to Resizor on save with file' do
+          @asset.save_to_resizor
+
           assert_requested(:post, "https://resizor.test:443/assets.json",
                            :times => 1) { |request|
                               request.body.include?("Content-Disposition: form-data; name=\"file\"; filename=\"image.jpg")
@@ -86,12 +87,22 @@ class ResizorAssetTest < Test::Unit::TestCase
         end
 
         should 'assign data for new assets as attributes' do
+          @asset.save_to_resizor
+
           assert_equal 1, @asset.id
           assert_equal 'i.jpg', @asset.name
           assert_equal 'image/jpeg', @asset.mime_type
           assert_equal 7, @asset.height
           assert_equal 8, @asset.width
           assert_equal 9, @asset.size
+        end
+
+        should 'append extra params if supplied' do
+          @asset.save_to_resizor(:right_now => 'rocking-out')
+          assert_requested(:post, "https://resizor.test:443/assets.json",
+                           :times => 1) { |request|
+                              request.body.match /Content-Disposition: form-data; name=\"right_now\".+rocking-out/m
+                            }
         end
       end
 

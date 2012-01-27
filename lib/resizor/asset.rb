@@ -17,9 +17,9 @@ module Resizor
       Digest::SHA1.hexdigest("#{Resizor.api_key}-#{id}-#{options[:size]}-#{options[:format]}")
     end
 
-    def save_to_resizor
+    def save_to_resizor(params = {})
       if path && File.exists?(path)
-        ret = Resizor.post('/assets.json', :file => File.open(path, 'rb'))
+        ret = Resizor.post('/assets.json', params.merge(:file => File.open(path, 'rb')))
         if ret.code == 201
           @id = ret.body['asset']['id']
           @name = "#{ret.body['asset']['name']}.#{ret.body['asset']['extension']}"
