@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'rake', '~> 0.9.2'
   s.add_development_dependency 'sqlite3', '~> 1.3.4'
-  s.add_development_dependency 'bundler', '~> 1.0.0'
+  s.add_development_dependency 'bundler', '~> 1.0'
   s.add_development_dependency 'shoulda', '~> 2.11.3'
   s.add_development_dependency 'webmock', '~> 1.6.2'
   s.add_development_dependency 'activerecord', '~>3.0.0'

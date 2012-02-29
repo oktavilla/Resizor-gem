@@ -27,7 +27,13 @@ module Resizor
     def has_resizor_asset name, options = {}
       include InstanceMethods
 
-      write_inheritable_attribute(:resizor_assets, {}) if resizor_assets.nil?
+      if resizor_assets.nil?
+        if ActiveSupport::VERSION::MAJOR == 3 && ActiveSupport::VERSION::MINOR > 1
+          self.resizor_assets = {}
+        else
+          write_inheritable_attribute(:resizor_assets, {})
+        end
+      end
       resizor_assets[name] = options
 
       before_save :save_attached_files_for_resizor
@@ -48,7 +54,12 @@ module Resizor
     end
 
     def resizor_assets
-      read_inheritable_attribute(:resizor_assets)
+      if ActiveSupport::VERSION::MAJOR == 3 && ActiveSupport::VERSION::MINOR > 1
+        class_attribute(:resizor_assets)
+        self.resizor_assets
+      else
+        read_inheritable_attribute(:resizor_assets)
+      end
     end
   end
 
