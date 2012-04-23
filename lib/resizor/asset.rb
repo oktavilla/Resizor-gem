@@ -7,8 +7,8 @@ module Resizor
     end
 
     def url(options={})
-      options = {:size => '200', :format => 'jpg'}.merge(options)
-      Resizor.cdn_host ? cdn_compatible_url(options) : query_string_url(options)
+      options = {:size => '200', :format => 'jpg', :cdn_host => !Resizor.cdn_host.nil?}.merge(options)
+      options[:cdn_host] ? cdn_compatible_url(options) : query_string_url(options)
     end
 
 
