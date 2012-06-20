@@ -125,6 +125,12 @@ class ResizorAssetTest < Test::Unit::TestCase
         assert_requested :delete, "https://resizor.test:443/assets/10.json?api_key=test-api-key", :times => 1
       end
 
+      should 'not make delete call to resizor if id is missing' do
+        @asset.id = nil
+        @asset.destroy
+        assert_not_requested :delete, "https://resizor.test:443/assets/.json?api_key=test-api-key"
+      end
+
       should 'return true on success' do
         stub_http_request(:delete, "https://resizor.test:443/assets/10.json?api_key=test-api-key").to_return(:status => 200)
         assert @asset.destroy

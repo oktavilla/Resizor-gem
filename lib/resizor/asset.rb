@@ -35,9 +35,11 @@ module Resizor
     end
 
     def destroy
-      ret = Resizor.delete("/assets/#{id}.json")
-      if ret.code == 200
-       return true
+      if id && id.to_s != ''
+        ret = Resizor.delete("/assets/#{id}.json")
+        if ret.code == 200
+         return true
+        end
       end
     end
 
