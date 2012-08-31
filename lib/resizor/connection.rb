@@ -66,11 +66,12 @@ module Resizor
     def initialize(_code, _body, _format = 'json')
       @code = _code
       @format = _format
-      @body = if @format == 'json' && _body != ''
+      @body = _body.to_s.strip
+      @body = if @format == 'json' && @body != ''
         if defined?(ActiveSupport::JSON)
-          ActiveSupport::JSON.decode(_body)
+          ActiveSupport::JSON.decode(@body)
         else
-          JSON.parse(_body)
+          JSON.parse(@body)
         end
       else
         _body
