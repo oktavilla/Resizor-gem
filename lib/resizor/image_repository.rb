@@ -21,8 +21,8 @@ module Resizor
       "/v#{api_version}/#{access_token}"
     end
 
-    def all
-      params = { timestamp: timestamp }
+    def all params = {}
+      params[:timestamp] = timestamp
       params[:signature] = generate_signature params
 
       response = HTTP.get url("assets.json"), params

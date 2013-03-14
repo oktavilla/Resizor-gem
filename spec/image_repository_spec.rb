@@ -2,10 +2,6 @@ require "spec_helper"
 require_relative "../lib/resizor/image_repository"
 
 describe Resizor::ImageRepository do
-  let :file_io do
-    stub
-  end
-
   subject do
     Resizor::ImageRepository.new api_version: 666, access_token: "my-token", secret_token: "my-secret-token"
   end
@@ -18,8 +14,19 @@ describe Resizor::ImageRepository do
 
   its(:client_path) { should eq("/v666/my-token") }
 
+  it "uses Resizor::Signature to generate signatures" do
+    stub_const "Resizor::Signature", Class.new
+
+    Resizor::Signature.should_receive(:generate)
+      .with subject.secret_token, id: "an-id"
+
+    subject.generate_signature id: "an-id"
+  end
+
   describe "store" do
     it "sends a multipart post with the file and a correct signature" do
+      file_io = stub
+
       expected_params = {
         id: "my-unique-id", file: file_io,
         signature: "123456789", timestamp: Time.new.to_i
@@ -87,7 +94,19 @@ describe Resizor::ImageRepository do
         response["images"].should eq([image_attributes])
     end
 
-    it "paginates"
+    it "paginates" do
+      subject.should_receive(:generate_signature).with({
+        timestamp: Time.new.to_i,
+        page: 2
+      }).and_return "paginated-listing-signature"
+
+      Resizor::HTTP.should_receive(:get)
+        .with("api.resizor.com/v666/my-token/assets.json", {
+          page: 2, timestamp: Time.now.to_i, signature: "paginated-listing-signature"
+        }).and_return ["[{}]"]
+
+      subject.all page: 2
+    end
   end
 
   private
