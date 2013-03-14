@@ -6,6 +6,7 @@ describe Resizor::ImageRepository do
     stub_const "Resizor::HTTP", Class.new
   end
 
+  # TODO: Should the config vars be passed as an object?
   subject do
     Resizor::ImageRepository.new api_version: 666, access_token: "my-token", secret_token: "my-secret-token"
   end
