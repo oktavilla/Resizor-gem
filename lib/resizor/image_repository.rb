@@ -30,7 +30,7 @@ module Resizor
 
     def fetch id
       params = { timestamp: timestamp }
-      params[:signature] = generate_signature(params.merge(id: id))
+      params[:signature] = generate_signature params.merge(id: id)
 
       response = HTTP.get url("assets/#{id}.json"), params
 
