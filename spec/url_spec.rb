@@ -58,6 +58,14 @@ describe Resizor::Url do
     end
   end
 
+  describe "scale" do
+    pending
+  end
+
+  describe "crop" do
+    pending
+  end
+
   describe "#signature" do
     it "uses Resizor::Signature to generate the signature param" do
       stub_const "Resizor::Signature", Class.new
