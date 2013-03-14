@@ -22,7 +22,7 @@ describe Resizor::Url do
   end
 
   describe "#generate" do
-    it "returns the full url for the image version" do
+    it "returns the resizor url for an image" do
       params = { id: "filename", format: "jpg", width: 500 }
       stub_signature params, "generated_signature"
 
@@ -32,9 +32,9 @@ describe Resizor::Url do
       url.should eq(expected)
     end
 
-    it "dissalows unknown operations" do
+    it "throws an error if the operation is unknown" do
       expect {
-        subject.generate id: "filename", format: "jpg", operation: "rotate"
+        subject.generate id: "filename", format: "jpg", operation: "unknown-rotate"
       }.to raise_exception(Resizor::Url::UnknownOperation)
     end
 
@@ -49,13 +49,11 @@ describe Resizor::Url do
           .and_return "cdn-5"
 
         params = { id: "filename", format: "jpg", width: 500 }
-
-        expected = "http://cdn-5.resizor.com/v1/token/filename.jpg?signature=generated_signature&width=500"
         stub_signature params, "generated_signature"
 
         url = subject.generate params
 
-        url.should eq(expected)
+        url.should eq("http://cdn-5.resizor.com/v1/token/filename.jpg?signature=generated_signature&width=500")
       end
     end
   end
