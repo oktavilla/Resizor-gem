@@ -12,6 +12,8 @@ describe Resizor::Url do
   its(:domain) { should eq("resizor.com") }
   its(:subdomain) { should eq("cdn") }
 
+  it_behaves_like "a signable object"
+
   it "combines the subdomain and domain to host" do
     subject.stub subdomain: "test"
     subject.stub domain: "example.com"
@@ -64,17 +66,6 @@ describe Resizor::Url do
 
   describe "crop" do
     pending
-  end
-
-  describe "#signature" do
-    it "uses Resizor::Signature to generate the signature param" do
-      stub_const "Resizor::Signature", Class.new
-
-      Resizor::Signature.should_receive(:generate)
-        .with subject.secret_token, id: "an-id"
-
-      subject.signature id: "an-id"
-    end
   end
 
   it "calculates a parallelized subdomain" do

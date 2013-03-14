@@ -19,14 +19,7 @@ describe Resizor::ImageRepository do
 
   its(:client_path) { should eq("/v666/my-token") }
 
-  it "uses Resizor::Signature to generate signatures" do
-    stub_const "Resizor::Signature", Class.new
-
-    Resizor::Signature.should_receive(:generate)
-      .with subject.secret_token, id: "an-id"
-
-    subject.generate_signature id: "an-id"
-  end
+  it_behaves_like "a signable object"
 
   describe "store" do
     it "sends a multipart post with the file and a correct signature" do
@@ -37,7 +30,7 @@ describe Resizor::ImageRepository do
         signature: "123456789", timestamp: Time.new.to_i
       }
 
-      subject.should_receive(:generate_signature).with({
+      subject.should_receive(:signature).with({
         id: "my-unique-id", timestamp: Time.new.to_i
       }).and_return "123456789"
 
@@ -55,7 +48,7 @@ describe Resizor::ImageRepository do
 
   describe "fetch" do
     it "returns the attributes for a found image" do
-      subject.should_receive(:generate_signature).with({
+      subject.should_receive(:signature).with({
         id: "image-id",
         timestamp: Time.new.to_i
       }).and_return "987654321"
@@ -82,7 +75,7 @@ describe Resizor::ImageRepository do
         }
       eos
 
-      subject.should_receive(:generate_signature).with({
+      subject.should_receive(:signature).with({
         timestamp: Time.new.to_i
       }).and_return "listing-signature"
 
@@ -100,7 +93,7 @@ describe Resizor::ImageRepository do
     end
 
     it "paginates" do
-      subject.should_receive(:generate_signature).with({
+      subject.should_receive(:signature).with({
         timestamp: Time.new.to_i,
         page: 2
       }).and_return "paginated-listing-signature"
