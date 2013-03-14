@@ -2,6 +2,10 @@ require "spec_helper"
 require_relative "../lib/resizor/image_repository"
 
 describe Resizor::ImageRepository do
+  before :each do
+    stub_const "Resizor::HTTP", Class.new
+  end
+
   subject do
     Resizor::ImageRepository.new api_version: 666, access_token: "my-token", secret_token: "my-secret-token"
   end

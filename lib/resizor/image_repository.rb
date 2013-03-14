@@ -1,8 +1,6 @@
 require "json"
 
 module Resizor
-  class HTTP
-  end
 
   class ImageRepository
     attr_reader :api_version, :access_token, :secret_token
