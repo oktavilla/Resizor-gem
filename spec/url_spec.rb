@@ -21,11 +21,19 @@ describe Resizor::Url do
     subject.optimize_parallel_downloads?.should eq("why yes of course")
   end
 
-  it "combines the subdomain and domain to host" do
-    subject.stub subdomain: "test"
-    subject.stub domain: "example.com"
+  describe "#host" do
+    before :each do
+      subject.stub subdomain: "test"
+      subject.stub domain: "example.com"
+    end
 
-    subject.host.should eq("test.example.com")
+    it "combines the subdomain and domain to host" do
+      subject.host.should eq("test.example.com")
+    end
+
+    it "allows a sudomain to be passed in" do
+      subject.host("test-1").should eq("test-1.example.com")
+    end
   end
 
   describe "#generate" do
