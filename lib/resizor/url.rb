@@ -1,12 +1,14 @@
 module Resizor
   class Url
+    AVAILABLE_SUBDOMAINS = 8
     KNOWN_OPERATIONS = [ "scale", "crop" ]
 
     UnknownOperation = Class.new ArgumentError
 
-    attr_reader :api_version, :access_token, :secret_token
+    attr_reader :api_version, :access_token, :secret_token, :config
 
-    def initialize attrs = {}
+    def initialize attrs = {}, config = Resizor.config
+      @config = config
       @api_version = attrs.fetch :api_version
       @access_token = attrs.fetch :access_token
       @secret_token = attrs.fetch :secret_token
@@ -30,10 +32,6 @@ module Resizor
 
     def subdomain
       "cdn"
-    end
-
-    def number_of_available_subdomains
-      8
     end
 
     def domain
@@ -61,7 +59,7 @@ module Resizor
     end
 
     def optimize_parallel_downloads?
-      Resizor.config.optimize_parallel_downloads?
+      config.optimize_parallel_downloads?
     end
 
     def parameter_string params
@@ -94,7 +92,7 @@ module Resizor
     # with the same arguments
     def parallelized_subdomain path, query
       check = [path, query].join "-"
-      identifier = Zlib::crc32(check) % number_of_available_subdomains + 1
+      identifier = Zlib::crc32(check) % AVAILABLE_SUBDOMAINS + 1
 
       [subdomain, identifier].join "-"
     end

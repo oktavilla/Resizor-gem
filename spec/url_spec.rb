@@ -79,7 +79,7 @@ describe Resizor::Url do
     fake_zlib.should_receive("crc32").with("/path-some=query").and_return 10
 
     # We want a number between 1 and the maximum available domains
-    expected_subdomain_number = 10 % 8 + 1
+    expected_subdomain_number = 10 % Resizor::Url::AVAILABLE_SUBDOMAINS + 1
     subdomain = subject.parallelized_subdomain "/path", "some=query"
 
     subdomain.should eq("cdn-#{expected_subdomain_number}")
