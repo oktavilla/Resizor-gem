@@ -37,6 +37,15 @@ module Resizor
       JSON.parse response.last
     end
 
+    def delete id
+      params = { timestamp: timestamp }
+      params[:signature] = signature params.merge(id: id)
+
+      response = HTTP.delete url("assets/#{id}.json"), params
+
+      response.first == 204
+    end
+
     def store file, id = nil
       params = { timestamp: timestamp }
       params[:id] = id if id

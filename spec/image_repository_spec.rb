@@ -52,7 +52,7 @@ describe Resizor::ImageRepository do
     it "returns the attributes for a found image" do
       subject.should_receive(:signature).with({
         id: "image-id",
-        timestamp: Time.new.to_i
+        timestamp: Time.now.to_i
       }).and_return "987654321"
 
       Resizor::HTTP.should_receive(:get)
@@ -66,6 +66,24 @@ describe Resizor::ImageRepository do
     end
 
     it "handles the sad path"
+  end
+
+  describe "delete" do
+    it "sends a http DELETE to resizor with the correct timestamp and signature" do
+      subject.should_receive(:signature).with({
+        id: "image-id",
+        timestamp: Time.now.to_i
+      }).and_return "987654321"
+
+      Resizor::HTTP.should_receive(:delete)
+        .with("api.resizor.com/v666/my-token/assets/image-id.json", {
+          timestamp: Time.now.to_i, signature: "987654321"
+        }).and_return [204, ""]
+
+        response = subject.delete "image-id"
+
+        response.should be_true
+    end
   end
 
   describe "all" do
