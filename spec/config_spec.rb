@@ -1,7 +1,7 @@
 require "spec_helper"
 require_relative "../lib/resizor/config"
 
-describe Resizor::Config do
+describe Resizor.config do
   before :each do
     Resizor.config.access_key = "my-access.key"
     Resizor.config.secret_key = "my-secret.key"
@@ -22,8 +22,13 @@ describe Resizor::Config do
     Resizor.configured?.should be_false
   end
 
-  it "requires a access key" do
-    Resizor.configured?.should be_true
+  it "knows if to optimize for parallel downloads" do
+    Resizor.config.optimize_parallel_downloads.should be_false
+
+    Resizor.config.optimize_parallel_downloads = true
+    Resizor.config.optimize_parallel_downloads?.should be_true
+
+    Resizor.config.optimize_parallel_downloads = false
   end
 
   it "allow setting the config variables in a block form" do

@@ -7,6 +7,8 @@ describe Resizor::ImageRepository do
   end
 
   # TODO: Should the config vars be passed as an object?
+  # Maybe the config should be passed around (or even accessed as a global)
+  # This is currently duplicated in Resizor::Url
   subject do
     Resizor::ImageRepository.new api_version: 666, access_token: "my-token", secret_token: "my-secret-token"
   end

@@ -60,8 +60,8 @@ module Resizor
       signature_klass.generate secret_token, params
     end
 
-    def parallelize
-      false
+    def optimize_parallel_downloads?
+      Resizor.config.optimize_parallel_downloads?
     end
 
     def parameter_string params
@@ -78,7 +78,7 @@ module Resizor
       path = components.fetch :path
       query = components.fetch :query
 
-      if parallelize
+      if optimize_parallel_downloads?
         url_host = host parallelized_subdomain(path, query)
       else
         url_host = host

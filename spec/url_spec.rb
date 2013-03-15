@@ -8,11 +8,18 @@ describe Resizor::Url do
     Resizor::Url.new api_version: 1, access_token: "token", secret_token: "my-secret-token"
   end
 
-  its(:parallelize) { should be_false }
+  it_behaves_like "a signable object"
+
   its(:domain) { should eq("resizor.com") }
+
   its(:subdomain) { should eq("cdn") }
 
-  it_behaves_like "a signable object"
+  it "delegates optimize_parallel_downloads to the config" do
+    fake_config = stub :optimize_parallel_downloads? => "why yes of course"
+    Resizor.stub(config: fake_config)
+
+    subject.optimize_parallel_downloads?.should eq("why yes of course")
+  end
 
   it "combines the subdomain and domain to host" do
     subject.stub subdomain: "test"
@@ -40,7 +47,7 @@ describe Resizor::Url do
 
     describe "with parallelize settings" do
       before :each do
-        subject.stub parallelize: true
+        subject.stub :optimize_parallel_downloads? => true
       end
 
       it "calculates the subdomain from the generated path" do
