@@ -66,11 +66,27 @@ describe Resizor::Url do
   end
 
   describe "scale" do
-    pending
+    it "delegates to generate with the scale operation" do
+      subject.should_receive(:generate)
+        .with(operation: "scale", width: 200)
+        .and_return("expected-url")
+
+      url = subject.scale width: 200
+
+      url.should eq("expected-url")
+    end
   end
 
   describe "crop" do
-    pending
+    it "delegates to generate with the crop operation" do
+      subject.should_receive(:generate)
+        .with(operation: "crop", width: 200, height: 100)
+        .and_return("expected-url")
+
+      url = subject.crop width: 200, height: 100
+
+      url.should eq("expected-url")
+    end
   end
 
   it "calculates a parallelized subdomain" do
