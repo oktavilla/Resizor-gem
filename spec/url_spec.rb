@@ -23,8 +23,7 @@ describe Resizor::Url do
 
   describe "#host" do
     before :each do
-      subject.stub subdomain: "test"
-      subject.stub domain: "example.com"
+      subject.stub subdomain: "test", domain: "example.com"
     end
 
     it "combines the subdomain and domain to host" do
@@ -77,7 +76,7 @@ describe Resizor::Url do
     it "delegates to generate with the scale operation" do
       subject.should_receive(:generate)
         .with(operation: "scale", width: 200)
-        .and_return("expected-url")
+        .and_return "expected-url"
 
       url = subject.scale width: 200
 
@@ -89,7 +88,7 @@ describe Resizor::Url do
     it "delegates to generate with the crop operation" do
       subject.should_receive(:generate)
         .with(operation: "crop", width: 200, height: 100)
-        .and_return("expected-url")
+        .and_return "expected-url"
 
       url = subject.crop width: 200, height: 100
 
