@@ -1,5 +1,3 @@
-require "singleton"
-
 module Resizor
   def self.configured?
     config.configured?
@@ -10,11 +8,10 @@ module Resizor
   end
 
   def self.config
-    Config.instance
+    @config ||= Config.new
   end
 
   class Config
-    include Singleton
     attr_accessor :access_key, :secret_key, :optimize_parallel_downloads
 
     def configured?
