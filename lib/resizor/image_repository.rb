@@ -2,6 +2,34 @@ require "json"
 
 module Resizor
 
+  class Asset
+    attr_reader :attributes
+    def initialize attributes
+      @attributes = attributes
+    end
+  end
+
+  class AssetResponse
+    attr_reader :asset
+
+    def initialize attributes
+      @asset = Asset.new attributes
+    end
+
+    def success?
+      true
+    end
+  end
+
+  class ErrorResponse
+    def initialize errors
+    end
+
+    def success?
+      false
+    end
+  end
+
   class ImageRepository
     attr_reader :api_version, :access_token, :secret_token
 
@@ -50,12 +78,18 @@ module Resizor
       params = { timestamp: timestamp }
       params[:id] = id if id
 
-      response = HTTP.post_multipart url("assets.json"), params.merge({
+      http_response = HTTP.post_multipart url("assets.json"), params.merge({
         signature: signature(params),
         file: file
       })
+      status, body = *http_response
+      body = JSON.parse body
 
-      JSON.parse response.last
+      if status == 201
+        AssetResponse.new body["asset"]
+      else
+        ErrorResponse.new body["errors"]
+      end
     end
 
     def timestamp

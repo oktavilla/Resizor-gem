@@ -23,7 +23,7 @@ describe Resizor::ImageRepository do
 
   it_behaves_like "a signable object"
 
-  describe "store" do
+  describe "#store" do
     it "sends a multipart post with the file and a correct signature" do
       file_io = stub
 
@@ -40,9 +40,10 @@ describe Resizor::ImageRepository do
         .with("api.resizor.com/v666/my-token/assets.json", expected_params)
         .and_return [201, image_json_response]
 
-      response_attributes = subject.store file_io, "my-unique-id"
+      response = subject.store file_io, "my-unique-id"
 
-      response_attributes.should eq(image_attributes)
+      response.success?.should eq(true)
+      response.asset.attributes.should eq(image_attributes)
     end
 
     it "handles the sad path"
@@ -60,9 +61,9 @@ describe Resizor::ImageRepository do
           timestamp: Time.now.to_i, signature: "987654321"
         }).and_return [200, image_json_response]
 
-      response = subject.fetch "image-id"
+      asset = subject.fetch "image-id"
 
-      response.should eq(image_attributes)
+      asset.attributes.should eq(image_attributes)
     end
 
     it "handles the sad path"
@@ -75,14 +76,13 @@ describe Resizor::ImageRepository do
         timestamp: Time.now.to_i
       }).and_return "987654321"
 
-      Resizor::HTTP.should_receive(:delete)
-        .with("api.resizor.com/v666/my-token/assets/image-id.json", {
-          timestamp: Time.now.to_i, signature: "987654321"
-        }).and_return [204, ""]
+      Resizor::HTTP.should_receive(:delete).with("api.resizor.com/v666/my-token/assets/image-id.json", {
+        timestamp: Time.now.to_i, signature: "987654321"
+      }).and_return [204, ""]
 
-        response = subject.delete "image-id"
+      response = subject.delete "image-id"
 
-        response.should be_true
+      response.should be_true
     end
   end
 
@@ -106,10 +106,10 @@ describe Resizor::ImageRepository do
 
         response = subject.all
 
-        response["total_pages"].should eq(4)
-        response["current_page"].should eq(1)
-        response["total_images"].should eq(2000)
-        response["images"].should eq([image_attributes])
+        response.total_pages.should eq(4)
+        response.current_page.should eq(1)
+        response.total_images.should eq(2000)
+        response.images.should eq([image_attributes])
     end
 
     it "paginates" do
@@ -131,13 +131,17 @@ describe Resizor::ImageRepository do
 
   def image_json_response
     %q{
-      { "id":1, "name":"i", "extension":"jpg", "mime_type":"image/jpeg",
-        "height":500, "width":332, "file_size":666,
-        "created_at":"2010-10-23T13:07:25Z" }
+      {
+        "asset": {
+          "id":1, "name":"i", "extension":"jpg", "mime_type":"image/jpeg",
+          "height":500, "width":332, "file_size":666,
+          "created_at":"2010-10-23T13:07:25Z"
+        }
+      }
     }
   end
 
   def image_attributes
-    JSON.parse image_json_response
+    JSON.parse(image_json_response)["asset"]
   end
 end
