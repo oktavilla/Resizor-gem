@@ -1,4 +1,5 @@
 require "json"
+require_relative "./signature"
 
 module Resizor
 
@@ -63,9 +64,14 @@ module Resizor
       params = { timestamp: timestamp }
       params[:signature] = signature params.merge(id: id)
 
-      response = HTTP.get url("assets/#{id}.json"), params
+      http_response = HTTP.get url("assets/#{id}.json"), params
+      code, body = *http_response
 
-      JSON.parse response.last
+      if code == 200
+        Asset.new JSON.parse(body)["asset"]
+      else
+        nil
+      end
     end
 
     def delete id

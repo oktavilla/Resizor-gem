@@ -69,7 +69,7 @@ describe Resizor::ImageRepository do
   end
 
   describe "fetch" do
-    it "returns the attributes for a found image" do
+    it "sends a GET request with the correct parameters" do
       subject.should_receive(:signature).with({
         id: "image-id",
         timestamp: Time.now.to_i
@@ -78,14 +78,26 @@ describe Resizor::ImageRepository do
       Resizor::HTTP.should_receive(:get)
         .with("api.resizor.com/v666/my-token/assets/image-id.json", {
           timestamp: Time.now.to_i, signature: "987654321"
-        }).and_return [200, image_json_response]
+        }).and_return [200, "{}"]
+
+      subject.fetch "image-id"
+    end
+
+    it "returns an asset if found" do
+      Resizor::HTTP.should_receive(:get).and_return [200, image_json_response]
 
       asset = subject.fetch "image-id"
 
       asset.attributes.should eq(image_attributes)
     end
 
-    it "handles the sad path"
+    it "returns falsey if no asset was found" do
+      Resizor::HTTP.should_receive(:get).and_return [404, "{}"]
+
+      asset = subject.fetch "non-existant-id"
+
+      asset.should be_false
+    end
   end
 
   describe "delete" do
