@@ -22,7 +22,10 @@ module Resizor
   end
 
   class ErrorResponse
+    attr_reader :errors
+
     def initialize errors
+      @errors = errors
     end
 
     def success?
@@ -82,6 +85,7 @@ module Resizor
         signature: signature(params),
         file: file
       })
+
       status, body = *http_response
       body = JSON.parse body
 

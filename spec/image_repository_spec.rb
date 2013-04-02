@@ -24,29 +24,48 @@ describe Resizor::ImageRepository do
   it_behaves_like "a signable object"
 
   describe "#store" do
-    it "sends a multipart post with the file and a correct signature" do
-      file_io = stub
+    let :file_io do
+      stub
+    end
 
-      expected_params = {
+    let :expected_params do
+      {
         id: "my-unique-id", file: file_io,
         signature: "123456789", timestamp: Time.new.to_i
       }
+    end
 
+    before :each do
       subject.should_receive(:signature).with({
         id: "my-unique-id", timestamp: Time.new.to_i
       }).and_return "123456789"
+    end
 
+    it "sends a multipart post with the file and a correct signature" do
       Resizor::HTTP.should_receive(:post_multipart)
         .with("api.resizor.com/v666/my-token/assets.json", expected_params)
-        .and_return [201, image_json_response]
+        .and_return [201, "{}"]
+
+      subject.store file_io, "my-unique-id"
+    end
+
+    it "returns an asset response when successful" do
+      Resizor::HTTP.should_receive(:post_multipart).and_return [201, image_json_response]
 
       response = subject.store file_io, "my-unique-id"
 
-      response.success?.should eq(true)
+      response.success?.should be_true
       response.asset.attributes.should eq(image_attributes)
     end
 
-    it "handles the sad path"
+    it "returns an error response if unsuccessful" do
+      Resizor::HTTP.should_receive(:post_multipart).and_return [500, error_json_response]
+
+      response = subject.store file_io, "my-unique-id"
+
+      response.success?.should be_false
+      response.errors.should eq(JSON.parse(error_json_response)["errors"])
+    end
   end
 
   describe "fetch" do
@@ -143,5 +162,11 @@ describe Resizor::ImageRepository do
 
   def image_attributes
     JSON.parse(image_json_response)["asset"]
+  end
+
+  def error_json_response
+    %q{
+      { "errors": [ "Missing param" ] }
+    }
   end
 end
