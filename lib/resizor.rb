@@ -13,6 +13,18 @@ module Resizor
     repository.store image, options["id"]
   end
 
+  def self.delete id
+    repository.delete id
+  end
+
+  def self.find id
+    repository.fetch id
+  end
+
+  def self.all options = {}
+    repository.all options
+  end
+
   def self.config
     @config ||= Config.new
   end

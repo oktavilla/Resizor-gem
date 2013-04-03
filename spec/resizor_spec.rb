@@ -14,12 +14,43 @@ describe Resizor do
 
   describe ".store" do
     it "returns a successful response with the stored image" do
-      image, file = stub("image"), stub("file")
-      Resizor.repository.should_receive(:store).with(file, "the-id").and_return image
+      repository_response, file = stub("response"), stub("file")
+      Resizor.repository.should_receive(:store).with(file, "the-id").and_return repository_response
 
       response = Resizor.store file, "id" => "the-id"
 
+      response.should eq(repository_response)
+    end
+  end
+
+  describe ".delete" do
+    it "delegates to the repository and returns the response" do
+      Resizor.repository.should_receive(:delete).with("an-image-id").and_return true
+
+      response = Resizor.delete "an-image-id"
+
+      response.should be_true
+    end
+  end
+
+  describe ".find" do
+    it "delegates to the repository and returns the response" do
+      image = stub
+      Resizor.repository.should_receive(:fetch).with("an-image-id").and_return image
+
+      response = Resizor.find "an-image-id"
+
       response.should eq(image)
+    end
+  end
+
+  describe ".all" do
+    it "delegates to the repository and returns the response" do
+      image_collection = stub
+      Resizor.repository.should_receive(:all).with("page" => 1).and_return image_collection
+
+      response = Resizor.all "page" => 1
+      response.should eq(image_collection)
     end
   end
 
