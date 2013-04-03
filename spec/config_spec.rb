@@ -1,5 +1,4 @@
 require "spec_helper"
-require_relative "../lib/resizor/config"
 
 describe Resizor::Config do
   describe "#configured?" do
@@ -42,5 +41,4 @@ describe Resizor::Config do
 
     subject.host.should eq("new-api.bananas.org")
   end
-
 end

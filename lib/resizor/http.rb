@@ -1,3 +1,6 @@
+require "uri"
+require "net/http"
+
 module Resizor
   module HTTP
     def self.get host, query

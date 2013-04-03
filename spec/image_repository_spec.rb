@@ -1,5 +1,4 @@
 require "spec_helper"
-require_relative "../lib/resizor/image_repository"
 
 describe Resizor::ImageRepository do
   before :each do

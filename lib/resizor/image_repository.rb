@@ -1,36 +1,10 @@
+require "forwardable"
 require "json"
-require_relative "./signature"
-require_relative "./image"
-require_relative "./image_collection"
 
 module Resizor
-
-  class ImageResponse
-    attr_reader :image
-
-    def initialize attributes
-      @image = Image.new attributes
-    end
-
-    def success?
-      true
-    end
-  end
-
-  class ErrorResponse
-    attr_reader :errors
-
-    def initialize errors
-      @errors = errors
-    end
-
-    def success?
-      false
-    end
-  end
-
   class ImageRepository
     extend Forwardable
+
     def_delegators :@config, :api_version, :access_key, :secret_key, :host
 
     def initialize config
@@ -105,6 +79,30 @@ module Resizor
 
     def url endpoint
       File.join host, client_path, endpoint
+    end
+  end
+
+  class ImageResponse
+    attr_reader :image
+
+    def initialize attributes
+      @image = Image.new attributes
+    end
+
+    def success?
+      true
+    end
+  end
+
+  class ErrorResponse
+    attr_reader :errors
+
+    def initialize errors
+      @errors = errors
+    end
+
+    def success?
+      false
     end
   end
 end

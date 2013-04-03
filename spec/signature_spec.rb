@@ -1,8 +1,6 @@
 require "spec_helper"
-require_relative "../lib/resizor/signature"
 
 describe Resizor::Signature do
-
   it "generates a parameter string sorted by the param keys" do
     signature = Resizor::Signature.new "coils-everywhere", foo: "bar", bar: "foo"
     signature.parameter_string.should eq("bar=foo&foo=bar")
@@ -28,5 +26,4 @@ describe Resizor::Signature do
       Resizor::Signature.generate(secret, params).should eq(signature_string)
     end
   end
-
 end

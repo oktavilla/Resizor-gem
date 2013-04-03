@@ -1,7 +1,4 @@
-
 require "spec_helper"
-require_relative "../lib/resizor/url"
-
 
 describe Resizor::Url do
   subject do

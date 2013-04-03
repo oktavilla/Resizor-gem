@@ -1,5 +1,3 @@
-require_relative "./api_version"
-
 module Resizor
   class Config
     attr_accessor :access_key, :secret_key, :optimize_parallel_downloads

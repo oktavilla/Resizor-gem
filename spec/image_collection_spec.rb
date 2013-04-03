@@ -1,5 +1,4 @@
 require "spec_helper"
-require_relative "../lib/resizor/image_collection"
 
 describe Resizor::ImageCollection do
   it "assigns attributes" do
@@ -34,5 +33,4 @@ describe Resizor::ImageCollection do
     collection.first.should eq(image)
     collection.each { |image_instance| image_instance.should eq(image) }
   end
-
 end

@@ -1,8 +1,6 @@
 require "spec_helper"
-require_relative "../lib/resizor/image"
 
 describe Resizor::Image do
-
   let :attributes do
     { :id => "abc123", :name => "giorgio-a-tsoukalos", "extension" => "jpg",
       "mime_type" => "image/jpeg", "height" => 693, "width" => 520,
@@ -16,12 +14,18 @@ describe Resizor::Image do
   # Assert that attributes is assigned correctly
 
   its(:id) { should eq("abc123") }
-  its(:name) { should eq("giorgio-a-tsoukalos") }
-  its(:extension) { should eq("jpg") }
-  its(:filename) { should eq("giorgio-a-tsoukalos.jpg") }
-  its(:width) { should eq(520) }
-  its(:height) { should eq(693) }
-  its(:file_size) { should eq(102059) }
-  its(:created_at) { should == Time.new(2013, 10, 23, 13, 7, 25, "+00:00") }
 
+  its(:name) { should eq("giorgio-a-tsoukalos") }
+
+  its(:extension) { should eq("jpg") }
+
+  its(:filename) { should eq("giorgio-a-tsoukalos.jpg") }
+
+  its(:width) { should eq(520) }
+
+  its(:height) { should eq(693) }
+
+  its(:file_size) { should eq(102059) }
+
+  its(:created_at) { should == Time.new(2013, 10, 23, 13, 7, 25, "+00:00") }
 end

@@ -1,5 +1,4 @@
 require "spec_helper"
-require "resizor/http"
 require 'webmock/rspec'
 
 describe Resizor::HTTP do

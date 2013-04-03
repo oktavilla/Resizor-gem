@@ -1,8 +1,6 @@
 require "spec_helper"
 require "tempfile"
 
-require_relative "../lib/resizor"
-
 describe Resizor do
   describe ".repository" do
     it "is a ImageRepository with the current config" do
