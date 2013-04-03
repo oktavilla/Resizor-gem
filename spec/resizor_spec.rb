@@ -13,7 +13,7 @@ describe Resizor do
   end
 
   describe ".store" do
-    it "returns a successful response with the stored image" do
+    it "delegates to the repository and returns the response" do
       repository_response, file = stub("response"), stub("file")
       Resizor.repository.should_receive(:store).with(file, "the-id").and_return repository_response
 

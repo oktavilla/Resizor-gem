@@ -11,10 +11,6 @@ module Resizor
       @config = config
     end
 
-    def client_path
-      "/v#{api_version}/#{access_key}"
-    end
-
     def all params = {}
       params[:timestamp] = timestamp
       params[:signature] = signature params
@@ -82,8 +78,14 @@ module Resizor
       signature_klass.generate secret_key, params
     end
 
+    private
+
     def url endpoint
       File.join host, client_path, endpoint
+    end
+
+    def client_path
+      "/#{api_version}/#{access_key}"
     end
   end
 

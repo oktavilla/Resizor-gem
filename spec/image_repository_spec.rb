@@ -6,7 +6,7 @@ describe Resizor::ImageRepository do
   end
 
   let :config do
-    stub :api_version => 666,
+    stub :api_version => "v6",
          :access_key => "my-token",
          :secret_key => "my-secret-token",
          :host => "api.resizor.com"
@@ -21,8 +21,6 @@ describe Resizor::ImageRepository do
   its(:access_key) { should eq("my-token") }
 
   its(:secret_key) { should eq("my-secret-token") }
-
-  its(:client_path) { should eq("/v666/my-token") }
 
   it_behaves_like "a signable object"
 
@@ -46,7 +44,7 @@ describe Resizor::ImageRepository do
 
     it "sends a multipart post with the file and a correct signature" do
       Resizor::HTTP.should_receive(:post_multipart)
-        .with("api.resizor.com/v666/my-token/images.json", expected_params)
+        .with("api.resizor.com/v6/my-token/images.json", expected_params)
         .and_return [201, image_json_response]
 
       subject.store file_io, "my-unique-id"
@@ -79,7 +77,7 @@ describe Resizor::ImageRepository do
       }).and_return "987654321"
 
       Resizor::HTTP.should_receive(:get)
-        .with("api.resizor.com/v666/my-token/images/image-id.json", {
+        .with("api.resizor.com/v6/my-token/images/image-id.json", {
           timestamp: Time.now.to_i, signature: "987654321"
         }).and_return [200, image_json_response]
 
@@ -110,7 +108,7 @@ describe Resizor::ImageRepository do
         timestamp: Time.now.to_i
       }).and_return "987654321"
 
-      Resizor::HTTP.should_receive(:delete).with("api.resizor.com/v666/my-token/images/image-id.json", {
+      Resizor::HTTP.should_receive(:delete).with("api.resizor.com/v6/my-token/images/image-id.json", {
         timestamp: Time.now.to_i, signature: "987654321"
       }).and_return [204, ""]
 
@@ -143,7 +141,7 @@ describe Resizor::ImageRepository do
       }).and_return "listing-signature"
 
       Resizor::HTTP.should_receive(:get)
-        .with("api.resizor.com/v666/my-token/images.json", {
+        .with("api.resizor.com/v6/my-token/images.json", {
           timestamp: Time.now.to_i, signature: "listing-signature"
         }).and_return [200, json_response]
 
@@ -164,7 +162,7 @@ describe Resizor::ImageRepository do
       }).and_return "paginated-listing-signature"
 
       Resizor::HTTP.should_receive(:get)
-        .with("api.resizor.com/v666/my-token/images.json", {
+        .with("api.resizor.com/v6/my-token/images.json", {
           page: 2, timestamp: Time.now.to_i, signature: "paginated-listing-signature"
         }).and_return ["[{}]"]
 
