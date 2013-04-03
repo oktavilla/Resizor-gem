@@ -49,21 +49,11 @@ module Resizor
     #
     # The correct signature will be calculated from the given options
     def generate options = {}
-      id = options.fetch :id
-      format = options.fetch :format
-
       validate_operation options[:operation]
 
-      url_params = convert_to_url_params options
+      id, format = options.fetch(:id), options.fetch(:format)
 
-      url_params[:signature] = signature url_params
-
-      # Remove keys not necessary in the query string
-      # We need them in the signature calculation so they are kept until here
-      url_params.delete :id
-      url_params.delete :format
-
-      build_url path: path("#{id}.#{format}"), query: parameter_string(url_params)
+      build_url path: path("#{id}.#{format}"), query: parameter_string_from_options(options)
     end
 
     def path endpoint = nil
@@ -86,10 +76,6 @@ module Resizor
       config.optimize_parallel_downloads?
     end
 
-    def parameter_string params
-      URI.encode_www_form params.sort
-    end
-
     # Ensure we do not send an unknown operation to resizor.
     # This is mostly to safeguard against typos.
     def validate_operation operation
@@ -103,18 +89,19 @@ module Resizor
     # If configured to +optimize_parallel_downloads+ it calculates which subdomain
     # to use with +parallelized_subdomain+
     def build_url components = {}
-      path = components.fetch :path
-      query = components.fetch :query
+      path, query = components.fetch(:path), components.fetch(:query)
 
-      if optimize_parallel_downloads?
-        url_host = host parallelized_subdomain(path, query)
-      else
-        url_host = host
-      end
-
-      components = components.merge host: url_host
+      components = components.merge host: computed_host(path, query)
 
       URI::HTTP.build(components).to_s
+    end
+
+    def computed_host path, query
+      if optimize_parallel_downloads?
+        host parallelized_subdomain(path, query)
+      else
+        host
+      end
     end
 
     # Figure out which subdomain this requets should use
@@ -127,16 +114,29 @@ module Resizor
       [subdomain, identifier].join "-"
     end
 
-    def convert_to_url_params options
-      url_params = options.dup
+    def parameter_string_from_options options
+      params = params_from_options options
 
-      # Convert cutout options
-      cutout_options = url_params.delete :cutout
-      if url_params[:operation] == "crop"
-        url_params.merge! convert_cutout_params(cutout_params)
+      params[:signature] = signature params
+
+      # Remove keys not necessary in the query string
+      # We need them in the signature calculation so they are kept until here
+      params.delete :id
+      params.delete :format
+
+      URI.encode_www_form params.sort
+    end
+
+    def params_from_options options
+      params = options.dup
+
+      # Convert cutout options from a nested hash to flat keys
+      cutout_params = params.delete :cutout
+      if params[:operation] == "crop"
+        params.merge! convert_cutout_params(cutout_params)
       end
 
-      url_params
+      params
     end
 
     def convert_cutout_params params
