@@ -3,7 +3,7 @@ require "resizor/http"
 require 'webmock/rspec'
 
 describe Resizor::HTTP do
-  include WebMock
+  include WebMock::API
 
   describe ".post_multipart" do
     it "sends a MULTIPART POST to the url with the parameters as a query string" do
