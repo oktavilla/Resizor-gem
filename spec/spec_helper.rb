@@ -7,4 +7,9 @@ RSpec.configure do |config|
   config.order = 'random'
 end
 
+Resizor.configure do |config|
+  config.access_key = "test-access"
+  config.secret_key = "test-secret"
+end
+
 Dir["./spec/support/**/*.rb"].sort.each { |f| require f }

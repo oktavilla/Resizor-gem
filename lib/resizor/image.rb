@@ -5,9 +5,9 @@ module Resizor
     attr_accessor :id, :name, :extension, :mime_type,
                   :width, :height, :file_size
 
-    attr_reader :created_at
+    attr_reader :created_at, :attributes
 
-    def initialize attrs = {}
+    def initialize attrs
       self.attributes = attrs
     end
 
@@ -16,9 +16,12 @@ module Resizor
     end
 
     def attributes= attrs
-      attrs.each do |k, v|
-        self.public_send("#{k}=", v) if self.respond_to? "#{k}="
+      attrs = attrs.reject {|key, value| !self.respond_to? "#{key}=" }
+      attrs.each do |key, value|
+        self.public_send("#{key}=", value)
       end
+
+      @attributes = attrs
     end
 
     def created_at= time

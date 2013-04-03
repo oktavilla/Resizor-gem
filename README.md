@@ -23,8 +23,8 @@ Save a file
     file = File.open "my-image.jpg"
     response = Resizor.store file, { id: "cats" }
     if response.success?
-      asset = response.asset
-      puts asset.to_h { id: "cats", mime_type: "image/jpeg" … }
+      image = response.image
+      puts image.to_h { id: "cats", mime_type: "image/jpeg" … }
     else
       raise response.errors # ["Invalid credentials"]
     end
@@ -40,23 +40,23 @@ Delete a file
 
 Find a file
 
-    asset = Resizor.find "cats"
-    if asset
-      puts asset.to_h # { id: "cats", mime_type: "image/jpeg" … }
+    image = Resizor.find "cats"
+    if image
+      puts image.to_h # { id: "cats", mime_type: "image/jpeg" … }
     else
-      raise "could not find asset"
+      raise "could not find image"
     end
 
 Fetch all stored files
 
-    assets = Resizor.all page: 2, per_page: 25
+    images = Resizor.all page: 2, per_page: 25
 
-    puts assets.page # 2
-    puts assets.total_pages # 5
-    puts assets.total_items # 110
+    puts images.page # 2
+    puts images.total_pages # 5
+    puts images.total_items # 110
 
-    assets.each do |asset|
-      puts asset.id
+    images.each do |image|
+      puts image.id
     end
 
 ## Contributing

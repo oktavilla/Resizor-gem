@@ -1,20 +1,15 @@
 require "json"
 require_relative "./signature"
+require_relative "./image"
+require_relative "./image_collection"
 
 module Resizor
 
-  class Asset
-    attr_reader :attributes
-    def initialize attributes
-      @attributes = attributes
-    end
-  end
-
-  class AssetResponse
-    attr_reader :asset
+  class ImageResponse
+    attr_reader :image
 
     def initialize attributes
-      @asset = Asset.new attributes
+      @image = Image.new attributes
     end
 
     def success?
@@ -35,40 +30,38 @@ module Resizor
   end
 
   class ImageRepository
-    attr_reader :api_version, :access_token, :secret_token
+    extend Forwardable
+    def_delegators :@config, :api_version, :access_key, :secret_key, :host
 
-    def initialize attrs = {}
-      @api_version = attrs.fetch :api_version
-      @access_token = attrs.fetch :access_token
-      @secret_token = attrs.fetch :secret_token
-    end
-
-    def host
-      "api.resizor.com"
+    def initialize config
+      @config = config
     end
 
     def client_path
-      "/v#{api_version}/#{access_token}"
+      "/v#{api_version}/#{access_key}"
     end
 
     def all params = {}
       params[:timestamp] = timestamp
       params[:signature] = signature params
 
-      response = HTTP.get url("assets.json"), params
+      http_response = HTTP.get url("images.json"), params
+      code, body = *http_response
 
-      JSON.parse response.last
+      if code == 200
+        ImageCollection.new JSON.parse(body)
+      end
     end
 
     def fetch id
       params = { timestamp: timestamp }
       params[:signature] = signature params.merge(id: id)
 
-      http_response = HTTP.get url("assets/#{id}.json"), params
+      http_response = HTTP.get url("images/#{id}.json"), params
       code, body = *http_response
 
       if code == 200
-        Asset.new JSON.parse(body)["asset"]
+        Image.new JSON.parse(body)["image"]
       else
         nil
       end
@@ -78,7 +71,7 @@ module Resizor
       params = { timestamp: timestamp }
       params[:signature] = signature params.merge(id: id)
 
-      response = HTTP.delete url("assets/#{id}.json"), params
+      response = HTTP.delete url("images/#{id}.json"), params
 
       response.first == 204
     end
@@ -87,7 +80,7 @@ module Resizor
       params = { timestamp: timestamp }
       params[:id] = id if id
 
-      http_response = HTTP.post_multipart url("assets.json"), params.merge({
+      http_response = HTTP.post_multipart url("images.json"), params.merge({
         signature: signature(params),
         file: file
       })
@@ -96,7 +89,7 @@ module Resizor
       body = JSON.parse body
 
       if status == 201
-        AssetResponse.new body["asset"]
+        ImageResponse.new body["image"]
       else
         ErrorResponse.new body["errors"]
       end
@@ -107,7 +100,7 @@ module Resizor
     end
 
     def signature params, signature_klass = Signature
-      signature_klass.generate secret_token, params
+      signature_klass.generate secret_key, params
     end
 
     def url endpoint

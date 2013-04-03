@@ -6,18 +6,22 @@ describe Resizor::ImageRepository do
     stub_const "Resizor::HTTP", Class.new
   end
 
-  # TODO: Should the config vars be passed as an object?
-  # Maybe the config should be passed around (or even accessed as a global)
-  # This is currently duplicated in Resizor::Url
+  let :config do
+    stub :api_version => 666,
+         :access_key => "my-token",
+         :secret_key => "my-secret-token",
+         :host => "api.resizor.com"
+  end
+
   subject do
-    Resizor::ImageRepository.new api_version: 666, access_token: "my-token", secret_token: "my-secret-token"
+     Resizor::ImageRepository.new config
   end
 
   its(:host) { should eq("api.resizor.com") }
 
-  its(:access_token) { should eq("my-token") }
+  its(:access_key) { should eq("my-token") }
 
-  its(:secret_token) { should eq("my-secret-token") }
+  its(:secret_key) { should eq("my-secret-token") }
 
   its(:client_path) { should eq("/v666/my-token") }
 
@@ -43,19 +47,19 @@ describe Resizor::ImageRepository do
 
     it "sends a multipart post with the file and a correct signature" do
       Resizor::HTTP.should_receive(:post_multipart)
-        .with("api.resizor.com/v666/my-token/assets.json", expected_params)
-        .and_return [201, "{}"]
+        .with("api.resizor.com/v666/my-token/images.json", expected_params)
+        .and_return [201, image_json_response]
 
       subject.store file_io, "my-unique-id"
     end
 
-    it "returns an asset response when successful" do
-      Resizor::HTTP.should_receive(:post_multipart).and_return [201, image_json_response]
+    it "returns an image response when successful" do
+      Resizor::HTTP.stub post_multipart: [201, image_json_response]
 
       response = subject.store file_io, "my-unique-id"
 
       response.success?.should be_true
-      response.asset.attributes.should eq(image_attributes)
+      response.image.attributes.should eq(image_attributes)
     end
 
     it "returns an error response if unsuccessful" do
@@ -76,27 +80,27 @@ describe Resizor::ImageRepository do
       }).and_return "987654321"
 
       Resizor::HTTP.should_receive(:get)
-        .with("api.resizor.com/v666/my-token/assets/image-id.json", {
+        .with("api.resizor.com/v666/my-token/images/image-id.json", {
           timestamp: Time.now.to_i, signature: "987654321"
-        }).and_return [200, "{}"]
+        }).and_return [200, image_json_response]
 
       subject.fetch "image-id"
     end
 
-    it "returns an asset if found" do
+    it "returns an image if found" do
       Resizor::HTTP.should_receive(:get).and_return [200, image_json_response]
 
-      asset = subject.fetch "image-id"
+      image = subject.fetch "image-id"
 
-      asset.attributes.should eq(image_attributes)
+      image.attributes.should eq(image_attributes)
     end
 
-    it "returns falsey if no asset was found" do
+    it "returns falsey if no image was found" do
       Resizor::HTTP.should_receive(:get).and_return [404, "{}"]
 
-      asset = subject.fetch "non-existant-id"
+      image = subject.fetch "non-existant-id"
 
-      asset.should be_false
+      image.should be_false
     end
   end
 
@@ -107,13 +111,21 @@ describe Resizor::ImageRepository do
         timestamp: Time.now.to_i
       }).and_return "987654321"
 
-      Resizor::HTTP.should_receive(:delete).with("api.resizor.com/v666/my-token/assets/image-id.json", {
+      Resizor::HTTP.should_receive(:delete).with("api.resizor.com/v666/my-token/images/image-id.json", {
         timestamp: Time.now.to_i, signature: "987654321"
       }).and_return [204, ""]
 
       response = subject.delete "image-id"
 
       response.should be_true
+    end
+
+    it "handles the sad path of delete (not found)" do
+      Resizor::HTTP.stub :delete => [404, ""]
+
+      response = subject.delete "image-id"
+
+      response.should be_false
     end
   end
 
@@ -131,16 +143,18 @@ describe Resizor::ImageRepository do
       }).and_return "listing-signature"
 
       Resizor::HTTP.should_receive(:get)
-        .with("api.resizor.com/v666/my-token/assets.json", {
+        .with("api.resizor.com/v666/my-token/images.json", {
           timestamp: Time.now.to_i, signature: "listing-signature"
         }).and_return [200, json_response]
 
-        response = subject.all
+      image_collection = stub
+      Resizor::ImageCollection.should_receive(:new)
+        .with(JSON.parse(json_response))
+        .and_return image_collection
 
-        response.total_pages.should eq(4)
-        response.current_page.should eq(1)
-        response.total_images.should eq(2000)
-        response.images.should eq([image_attributes])
+      response = subject.all
+
+      response.should eq(image_collection)
     end
 
     it "paginates" do
@@ -150,12 +164,14 @@ describe Resizor::ImageRepository do
       }).and_return "paginated-listing-signature"
 
       Resizor::HTTP.should_receive(:get)
-        .with("api.resizor.com/v666/my-token/assets.json", {
+        .with("api.resizor.com/v666/my-token/images.json", {
           page: 2, timestamp: Time.now.to_i, signature: "paginated-listing-signature"
         }).and_return ["[{}]"]
 
       subject.all page: 2
     end
+
+    it "handle a non 200 response"
   end
 
   private
@@ -163,7 +179,7 @@ describe Resizor::ImageRepository do
   def image_json_response
     %q{
       {
-        "asset": {
+        "image": {
           "id":1, "name":"i", "extension":"jpg", "mime_type":"image/jpeg",
           "height":500, "width":332, "file_size":666,
           "created_at":"2010-10-23T13:07:25Z"
@@ -173,7 +189,7 @@ describe Resizor::ImageRepository do
   end
 
   def image_attributes
-    JSON.parse(image_json_response)["asset"]
+    JSON.parse(image_json_response)["image"]
   end
 
   def error_json_response

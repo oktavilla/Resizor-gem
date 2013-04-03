@@ -16,7 +16,7 @@ describe Resizor::HTTP do
       stub_request(:any, /example/).to_return body: "omg", status: 200
       response = Resizor::HTTP.get "http://example.com", key: "val"
 
-      request(:get, "http://example.com/?key=val").should have_been_made
+      a_request(:get, "http://example.com/?key=val").should have_been_made
       response.should eq([200, "omg"])
     end
   end
@@ -27,7 +27,7 @@ describe Resizor::HTTP do
 
       response = Resizor::HTTP.delete "http://example.com/some-path", key: "val"
 
-      request(:delete, "http://example.com/some-path?key=val").should have_been_made
+      a_request(:delete, "http://example.com/some-path?key=val").should have_been_made
       response.should eq([204, nil])
     end
   end

@@ -1,21 +1,20 @@
+require_relative "./api_version"
+
 module Resizor
-  def self.configured?
-    config.configured?
-  end
-
-  def self.configure &block
-    yield(config) if block_given?
-  end
-
-  def self.config
-    @config ||= Config.new
-  end
-
   class Config
     attr_accessor :access_key, :secret_key, :optimize_parallel_downloads
+    attr_writer :host
 
     def configured?
       access_key && secret_key
+    end
+
+    def api_version
+      API_VERSION
+    end
+
+    def host
+      @host ||= "api.resizor.com"
     end
 
     def optimize_parallel_downloads

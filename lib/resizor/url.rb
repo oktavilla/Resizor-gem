@@ -5,13 +5,13 @@ module Resizor
 
     UnknownOperation = Class.new ArgumentError
 
-    attr_reader :api_version, :access_token, :secret_token, :config
+    attr_reader :api_version, :access_key, :secret_key, :config
 
     def initialize attrs = {}, config = Resizor.config
       @config = config
       @api_version = attrs.fetch :api_version
-      @access_token = attrs.fetch :access_token
-      @secret_token = attrs.fetch :secret_token
+      @access_key = attrs.fetch :access_key
+      @secret_key = attrs.fetch :secret_key
     end
 
     def subdomain
@@ -74,12 +74,12 @@ module Resizor
     end
 
     def client_path
-      "/v#{api_version}/#{access_token}"
+      "/v#{api_version}/#{access_key}"
     end
 
     # Generate a signature from a parameters hash
     def signature params, signature_klass = Signature
-      signature_klass.generate secret_token, params
+      signature_klass.generate secret_key, params
     end
 
     def optimize_parallel_downloads?

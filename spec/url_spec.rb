@@ -5,7 +5,7 @@ require_relative "../lib/resizor/url"
 
 describe Resizor::Url do
   subject do
-    Resizor::Url.new api_version: 1, access_token: "token", secret_token: "my-secret-token"
+    Resizor::Url.new api_version: 1, access_key: "token", secret_key: "my-secret-token"
   end
 
   it_behaves_like "a signable object"
