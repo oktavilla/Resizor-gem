@@ -14,7 +14,7 @@ module Resizor
       end
 
       def find id
-        repository.fetch id
+        repository.find id
       end
 
       def all options = {}

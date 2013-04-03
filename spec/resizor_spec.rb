@@ -36,7 +36,7 @@ describe Resizor do
   describe ".find" do
     it "delegates to the repository and returns the response" do
       image = stub
-      Resizor.repository.should_receive(:fetch).with("an-image-id").and_return image
+      Resizor.repository.should_receive(:find).with("an-image-id").and_return image
 
       response = Resizor.find "an-image-id"
 

@@ -71,7 +71,7 @@ describe Resizor::ImageRepository do
     end
   end
 
-  describe "fetch" do
+  describe "find" do
     it "sends a GET request with the correct parameters" do
       subject.should_receive(:signature).with({
         id: "image-id",
@@ -83,13 +83,13 @@ describe Resizor::ImageRepository do
           timestamp: Time.now.to_i, signature: "987654321"
         }).and_return [200, image_json_response]
 
-      subject.fetch "image-id"
+      subject.find "image-id"
     end
 
     it "returns an image if found" do
       Resizor::HTTP.should_receive(:get).and_return [200, image_json_response]
 
-      image = subject.fetch "image-id"
+      image = subject.find "image-id"
 
       image.attributes.should eq(image_attributes)
     end
@@ -97,7 +97,7 @@ describe Resizor::ImageRepository do
     it "returns falsey if no image was found" do
       Resizor::HTTP.should_receive(:get).and_return [404, "{}"]
 
-      image = subject.fetch "non-existant-id"
+      image = subject.find "non-existant-id"
 
       image.should be_false
     end

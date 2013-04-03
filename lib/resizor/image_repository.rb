@@ -27,7 +27,7 @@ module Resizor
       end
     end
 
-    def fetch id
+    def find id
       params = { timestamp: timestamp }
       params[:signature] = signature params.merge(id: id)
 
