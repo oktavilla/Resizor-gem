@@ -67,7 +67,7 @@ describe Resizor::ImageRepository do
       response = subject.store file_io, "my-unique-id"
 
       response.success?.should be_false
-      response.errors.should eq(JSON.parse(error_json_response)["errors"])
+      response.errors.should eq(error_response)
     end
   end
 
@@ -116,15 +116,16 @@ describe Resizor::ImageRepository do
 
       response = subject.delete "image-id"
 
-      response.should be_true
+      response.success?.should be_true
     end
 
     it "handles the sad path of delete (not found)" do
-      Resizor::HTTP.stub :delete => [404, ""]
+      Resizor::HTTP.stub :delete => [404, error_json_response]
 
       response = subject.delete "image-id"
 
-      response.should be_false
+      response.success?.should be_false
+      response.errors.should eq(error_response)
     end
   end
 
@@ -195,5 +196,9 @@ describe Resizor::ImageRepository do
     %q{
       { "errors": [ "Missing param" ] }
     }
+  end
+
+  def error_response
+    JSON.parse(error_json_response)["errors"]
   end
 end

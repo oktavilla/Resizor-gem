@@ -45,9 +45,14 @@ module Resizor
       params = { timestamp: timestamp }
       params[:signature] = signature params.merge(id: id)
 
-      response = HTTP.delete url("images/#{id}.json"), params
+      http_response = HTTP.delete url("images/#{id}.json"), params
+      code, body = *http_response
 
-      response.first == 204
+      if code == 204
+        SuccessResponse.new
+      else
+        ErrorResponse.new JSON.parse(body)["errors"]
+      end
     end
 
     def store file, id = nil
@@ -82,15 +87,17 @@ module Resizor
     end
   end
 
-  class ImageResponse
+  class SuccessResponse
+    def success?
+      true
+    end
+  end
+
+  class ImageResponse < SuccessResponse
     attr_reader :image
 
     def initialize attributes
       @image = Image.new attributes
-    end
-
-    def success?
-      true
     end
   end
 

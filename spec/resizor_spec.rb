@@ -25,11 +25,12 @@ describe Resizor do
 
   describe ".delete" do
     it "delegates to the repository and returns the response" do
-      Resizor.repository.should_receive(:delete).with("an-image-id").and_return true
+      repository_response = stub "response"
+      Resizor.repository.should_receive(:delete).with("an-image-id").and_return repository_response
 
       response = Resizor.delete "an-image-id"
 
-      response.should be_true
+      response.should eq(repository_response)
     end
   end
 
