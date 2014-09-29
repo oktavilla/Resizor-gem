@@ -50,7 +50,7 @@ module Resizor
     end
 
     def cdn_compatible_url(options={})
-      "http://#{Resizor.cdn_host}/assets/#{options[:size]}#{"/"+options[:cutout] if options[:cutout]}/#{resize_token_for(options)}/#{id}.#{options[:format]}"
+      "//#{Resizor.cdn_host}/assets/#{options[:size]}#{"/"+options[:cutout] if options[:cutout]}/#{resize_token_for(options)}/#{id}.#{options[:format]}"
     end
 
   end
