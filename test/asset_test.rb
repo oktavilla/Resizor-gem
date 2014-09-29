@@ -44,11 +44,11 @@ class ResizorAssetTest < Test::Unit::TestCase
       end
 
       should 'generate url for size c200x300' do
-        assert_equal 'http://abc.cloudfront.com/assets/c200x300/b8bb7c4c7c4fc1006c904f011f32f50f69730e5e/10.jpg', @asset.url(:size => 'c200x300')
+        assert_equal '//abc.cloudfront.com/assets/c200x300/b8bb7c4c7c4fc1006c904f011f32f50f69730e5e/10.jpg', @asset.url(:size => 'c200x300')
       end
 
       should 'generate url for size c200x300 format png' do
-        assert_equal 'http://abc.cloudfront.com/assets/c200x300/0cf27070e89c44a40aee85decca2cd2d98af1dc2/10.png', @asset.url(:size => 'c200x300', :format => 'png')
+        assert_equal '//abc.cloudfront.com/assets/c200x300/0cf27070e89c44a40aee85decca2cd2d98af1dc2/10.png', @asset.url(:size => 'c200x300', :format => 'png')
       end
 
       should 'generate url with out cdn_host if option cdn_host is set to false' do
