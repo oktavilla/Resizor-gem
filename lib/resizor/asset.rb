@@ -46,11 +46,22 @@ module Resizor
   private
 
     def query_string_url(options={})
-      "#{Resizor.api_url(true)}/assets/#{id}.#{options[:format]}?size=#{options[:size]}#{"&cutout="+options[:cutout] if options[:cutout]}&token=#{resize_token_for(options)}"
+      cutout = options[:cutout]
+      cutout_string = cutout ? "&cutout="+options[:cutout] : ""
+
+      force_https = options[:protocol] == "https"
+
+      "#{Resizor.api_url(!force_https)}/assets/#{id}.#{options[:format]}?size=#{options[:size]}#{cutout_string}&token=#{resize_token_for(options)}"
     end
 
     def cdn_compatible_url(options={})
-      "//#{Resizor.cdn_host}/assets/#{options[:size]}#{"/"+options[:cutout] if options[:cutout]}/#{resize_token_for(options)}/#{id}.#{options[:format]}"
+      cutout = options[:cutout]
+      cutout_string = cutout ? "/#{cutout}" : ""
+
+      protocol = options[:protocol]
+      protocol_string =  protocol ? "#{protocol}:" : ""
+
+      "#{protocol_string}//#{Resizor.cdn_host}/assets/#{options[:size]}#{cutout_string}/#{resize_token_for(options)}/#{id}.#{options[:format]}"
     end
 
   end

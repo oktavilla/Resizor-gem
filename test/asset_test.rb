@@ -54,6 +54,10 @@ class ResizorAssetTest < Test::Unit::TestCase
       should 'generate url with out cdn_host if option cdn_host is set to false' do
         assert_equal 'http://resizor.test:80/assets/10.jpg?size=c200x300&token=b8bb7c4c7c4fc1006c904f011f32f50f69730e5e', @asset.url(:size => 'c200x300', :cdn_host => false)
       end
+
+      should 'generate url for https protocol when given proto: https param' do
+        assert_equal 'https://abc.cloudfront.com/assets/200/08852e19d025bb3faf72058f6bcfc36f2e3fb7b7/10.jpg', @asset.url(:protocol => 'https')
+      end
     end
 
     should 'generate resize token for size c200x300 and format jpg' do
@@ -62,6 +66,10 @@ class ResizorAssetTest < Test::Unit::TestCase
 
     should 'generate url for size c200x300 with cutout 300x200-30x40' do
       assert_equal 'http://resizor.test:80/assets/10.jpg?size=c200x300&cutout=300x200-30x40&token=b8bb7c4c7c4fc1006c904f011f32f50f69730e5e', @asset.url(:size => 'c200x300', :cutout => '300x200-30x40')
+    end
+
+    should 'generate https url when given https param' do
+      assert_equal 'https://resizor.test:443/assets/10.jpg?size=200&token=08852e19d025bb3faf72058f6bcfc36f2e3fb7b7', @asset.url(:protocol => 'https')
     end
 
     context 'when saving to resizor' do
