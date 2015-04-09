@@ -1,19 +1,19 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
-require 'rubygems'
-require 'test/unit'
+require 'minitest/autorun'
 require 'shoulda'
 require 'resizor'
+require 'logger'
 
-gem 'activerecord', '~>3.0.0'
+require 'active_support'
 require 'active_record'
 
-require 'webmock/test_unit'
+require 'webmock/minitest'
 include WebMock::API
 
 config = YAML::load(IO.read(File.dirname(__FILE__) + '/database.yml'))
-ActiveRecord::Base.logger = ActiveSupport::BufferedLogger.new(File.dirname(__FILE__) + "/debug.log")
+ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/debug.log")
 ActiveRecord::Base.establish_connection(config['test'])
 
 if defined?(Rails::Railtie)

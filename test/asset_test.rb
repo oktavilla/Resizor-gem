@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/test_helper')
 
-class ResizorAssetTest < Test::Unit::TestCase
+class ResizorAssetTest < Minitest::Test
   context "A ResizorAsset" do
     setup do
       setup_resizor

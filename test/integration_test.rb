@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/test_helper')
 
-class IntegrationTest < Test::Unit::TestCase
+class IntegrationTest < Minitest::Test
 
   context 'Including Resizor in a Rails project' do
     setup do
@@ -87,9 +87,7 @@ class IntegrationTest < Test::Unit::TestCase
     end
 
     should 'should work with no attachment set' do
-      assert_nothing_raised do
-        @item.save
-      end
+      @item.save
     end
 
     should 'return false when no attachment is set' do

@@ -13,12 +13,13 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = '>= 1.3.6'
 
-  s.add_development_dependency 'rake', '~> 0.9.2'
-  s.add_development_dependency 'sqlite3', '~> 1.3.4'
-  s.add_development_dependency 'bundler', '~> 1.0'
-  s.add_development_dependency 'shoulda', '~> 2.11.3'
-  s.add_development_dependency 'webmock', '~> 1.6.2'
-  s.add_development_dependency 'activerecord', '~>3.0.0'
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'sqlite3'
+  s.add_development_dependency 'bundler'
+  s.add_development_dependency 'shoulda'
+  s.add_development_dependency 'webmock'
+  s.add_development_dependency 'activerecord'
+  s.add_development_dependency 'minitest', '>= 5.5.1'
 
   s.add_dependency(%q<rest-client>, ['>= 1.4.2'])
   s.add_dependency(%q<json>, ['>= 1.2'])
