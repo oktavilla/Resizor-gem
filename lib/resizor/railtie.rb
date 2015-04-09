@@ -20,6 +20,7 @@ module Resizor
   module Glue
     def self.included base
       base.extend ClassMethods
+      base.class_attribute(:resizor_assets)
     end
   end
 
@@ -28,11 +29,7 @@ module Resizor
       include InstanceMethods
 
       if resizor_assets.nil?
-        if active_support_three_dot_one?
-          self.resizor_assets = {}
-        else
-          write_inheritable_attribute(:resizor_assets, {})
-        end
+        self.resizor_assets = {}
       end
       resizor_assets[name] = options
 
@@ -50,22 +47,6 @@ module Resizor
       define_method "#{name}?" do
         !asset_for(name).file.nil? || !asset_for(name).id.nil?
       end
-
-    end
-
-    def resizor_assets
-      if active_support_three_dot_one?
-        class_attribute(:resizor_assets)
-        self.resizor_assets
-      else
-        read_inheritable_attribute(:resizor_assets)
-      end
-    end
-
-    def active_support_three_dot_one?
-      defined?(ActiveSupport::VERSION) &&
-        ActiveSupport::VERSION::MAJOR == 3 &&
-        ActiveSupport::VERSION::MINOR > 1
     end
   end
 

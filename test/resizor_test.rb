@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/test_helper')
 
-class ResizorTest < Test::Unit::TestCase
+class ResizorTest < Minitest::Test
   context 'When Resizor gem is not setup it' do
     setup do
       Resizor.instance_variable_set("@connection", nil)
@@ -8,7 +8,7 @@ class ResizorTest < Test::Unit::TestCase
 
     ['get', 'post', 'delete'].each do |m|
       should "raise error for #{m}" do
-        exception = assert_raise(RuntimeError) { Resizor.send(m, nil) }
+        exception = assert_raises(RuntimeError) { Resizor.send(m, nil) }
         assert_equal 'Not connected. Please setup Resizor configuration first.', exception.message
       end
     end
