@@ -51,6 +51,10 @@ class ResizorAssetTest < Minitest::Test
         assert_equal '//abc.cloudfront.com/assets/c200x300/0cf27070e89c44a40aee85decca2cd2d98af1dc2/10.png', @asset.url(:size => 'c200x300', :format => 'png')
       end
 
+      should 'generate url for size c200x300 with quality 40' do
+        assert_equal '//abc.cloudfront.com/assets/c200x300q40/f4129415bb9c42bdd405dbe0ce3461fe4650c89c/10.jpg', @asset.url(:size => 'c200x300', quality: 40)
+      end
+
       should 'generate url with out cdn_host if option cdn_host is set to false' do
         assert_equal 'http://resizor.test:80/assets/10.jpg?size=c200x300&token=b8bb7c4c7c4fc1006c904f011f32f50f69730e5e', @asset.url(:size => 'c200x300', :cdn_host => false)
       end

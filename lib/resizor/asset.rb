@@ -8,6 +8,8 @@ module Resizor
 
     def url(options={})
       options = {:size => '200', :format => 'jpg', :cdn_host => !Resizor.cdn_host.nil?}.merge(options)
+      options[:size] = [options[:size], "q", options.delete(:quality)].join if options[:quality]
+
       options[:cdn_host] ? cdn_compatible_url(options) : query_string_url(options)
     end
 
